@@ -23,7 +23,7 @@ namespace NBA2K12Showcase.Editor
         private static readonly HashSet<string> AllowedExtensions =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                ".fbx", ".obj", ".dae", ".png", ".tga", ".jpg", ".jpeg",
+                ".fbx", ".obj", ".dae", ".glb", ".gltf", ".png", ".tga", ".jpg", ".jpeg",
                 ".bmp", ".tif", ".tiff", ".psd", ".dds", ".mtl", ".mat", ".json", ".txt"
             };
 
@@ -54,7 +54,7 @@ namespace NBA2K12Showcase.Editor
             {
                 EditorUtility.DisplayDialog(
                     "Showcase Asset Import",
-                    "No supported FBX/OBJ/DAE model or texture files were found. Unity cannot import SDAT or IFF archives directly; export the contained model/texture files first.",
+                    "No supported FBX/OBJ/DAE/GLB/GLTF model or texture files were found. Unity cannot import SDAT or IFF archives directly; export the contained model/texture files first.",
                     "OK");
                 return;
             }
