@@ -32,6 +32,21 @@ namespace NBA2K12Showcase
             typeof(BasketballHumanoidVisualRetargeter).GetField(
                 "visibilityCached", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        private static readonly HumanBodyBones[] RequiredBones =
+        {
+            HumanBodyBones.Hips,
+            HumanBodyBones.LeftUpperLeg, HumanBodyBones.LeftLowerLeg,
+            HumanBodyBones.LeftFoot, HumanBodyBones.LeftToes,
+            HumanBodyBones.RightUpperLeg, HumanBodyBones.RightLowerLeg,
+            HumanBodyBones.RightFoot, HumanBodyBones.RightToes,
+            HumanBodyBones.Spine, HumanBodyBones.Chest, HumanBodyBones.UpperChest,
+            HumanBodyBones.LeftShoulder, HumanBodyBones.LeftUpperArm,
+            HumanBodyBones.LeftLowerArm, HumanBodyBones.LeftHand,
+            HumanBodyBones.Neck, HumanBodyBones.Head,
+            HumanBodyBones.RightShoulder, HumanBodyBones.RightUpperArm,
+            HumanBodyBones.RightLowerArm, HumanBodyBones.RightHand
+        };
+
         [Header("Fallback and slot models")]
         [SerializeField] private GameObject fallbackPrefab;
         [SerializeField] private Transform currentModelRoot;
@@ -78,16 +93,17 @@ namespace NBA2K12Showcase
                 return;
             }
 
-            Animator prefabAnimator = slot.modelPrefab.GetComponentInChildren<Animator>(true);
-            if (prefabAnimator == null || prefabAnimator.avatar == null || !prefabAnimator.avatar.isHuman)
+            if (!IsCompatibleModel(slot.modelPrefab, out string validationFailure))
             {
                 Debug.LogError(
-                    "[NBA2K12 Showcase] Player slot " + index +
-                    " was not switched because its model prefab has no valid Humanoid Avatar.",
+                    "[NBA2K12 Showcase] Player slot " + index + " was not switched. " +
+                    validationFailure,
                     this);
                 attempted = true;
                 return;
             }
+
+            Animator prefabAnimator = slot.modelPrefab.GetComponentInChildren<Animator>(true);
 
             if (AnimatorField == null || InitializedField == null || VisibilityCachedField == null)
             {
@@ -121,15 +137,19 @@ namespace NBA2K12Showcase
             replacement.transform.localRotation = localRotation;
             replacement.transform.localScale = localScale;
 
-            Animator replacementAnimator = replacement.GetComponentInChildren<Animator>(true);
-            if (replacementAnimator == null || replacementAnimator.avatar == null || !replacementAnimator.avatar.isHuman)
+            if (!IsCompatibleModel(replacement, out string instanceFailure))
             {
                 Destroy(replacement);
                 if (oldRoot != null) oldRoot.SetActive(true);
-                Debug.LogError("[NBA2K12 Showcase] Instantiated variant lost its Humanoid Avatar; fallback restored.", this);
+                Debug.LogError(
+                    "[NBA2K12 Showcase] Instantiated variant is incompatible; fallback restored. " +
+                    instanceFailure,
+                    this);
                 attempted = true;
                 return;
             }
+
+            Animator replacementAnimator = replacement.GetComponentInChildren<Animator>(true);
 
             retargeter.enabled = false;
             AnimatorField.SetValue(retargeter, replacementAnimator);
@@ -144,6 +164,46 @@ namespace NBA2K12Showcase
                 "[NBA2K12 Showcase] Applied player visual variant " + index + ": " +
                 slot.modelPrefab.name + ". Verify animation and uniform fit in Play Mode.",
                 this);
+        }
+
+        private static bool IsCompatibleModel(GameObject model, out string reason)
+        {
+            Animator animator = model != null ? model.GetComponentInChildren<Animator>(true) : null;
+            if (animator == null || animator.avatar == null || !animator.avatar.isHuman)
+            {
+                reason = "The model needs a valid Unity Humanoid Avatar.";
+                return false;
+            }
+
+            foreach (HumanBodyBones bone in RequiredBones)
+            {
+                if (animator.GetBoneTransform(bone) == null)
+                {
+                    reason = "The Avatar is missing required retarget bone " + bone + ".";
+                    return false;
+                }
+            }
+
+            bool validSkin = false;
+            foreach (SkinnedMeshRenderer renderer in model.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+            {
+                if (renderer != null && renderer.sharedMesh != null &&
+                    renderer.bones != null && renderer.bones.Length > 0 &&
+                    renderer.rootBone != null)
+                {
+                    validSkin = true;
+                    break;
+                }
+            }
+
+            if (!validSkin)
+            {
+                reason = "The model must include a SkinnedMeshRenderer with mesh, bones and root bone; static meshes are preview-only.";
+                return false;
+            }
+
+            reason = string.Empty;
+            return true;
         }
 
         private PlayerSlot FindSlot(int playerIndex)
