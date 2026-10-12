@@ -84,6 +84,46 @@ if (Test-Path -LiteralPath $inputProviderPath) {
     Write-Warning "Could not find gamepad input provider at $inputProviderPath. USB controller setup will retain upstream mappings."
 }
 
+# The upstream match layer originally latched shots and steals from mouse/keyboard only.
+# Wire those same central gameplay paths to supported USB Gamepad controls.
+$matchControllerPath = Join-Path $upstreamRoot 'Assets\AI4AnimationRemake\Runtime\Control\BasketballMatchController.cs'
+if (Test-Path -LiteralPath $matchControllerPath) {
+    $matchOriginal = [System.IO.File]::ReadAllText($matchControllerPath)
+    $nl = [Environment]::NewLine
+    $matchPatched = $matchOriginal.Replace(
+        '            bool primaryHeld = allowHumanInput && pointerAvailable && mouse != null &&' + $nl +
+        '                               mouse.leftButton.isPressed;',
+        '            Gamepad gamepad = Gamepad.current;' + $nl +
+        '            bool primaryHeld = allowHumanInput && (' + $nl +
+        '                (pointerAvailable && mouse != null && mouse.leftButton.isPressed) ||' + $nl +
+        '                (gamepad != null && (gamepad.buttonWest.isPressed || gamepad.buttonNorth.isPressed)));'
+    )
+    $matchPatched = $matchPatched.Replace(
+        '            if (activeOwnsBall && keyboard != null &&' + $nl +
+        '                keyboard.spaceKey.wasPressedThisFrame && !passCommitted)',
+        '            bool gamepadShootPressed = allowHumanInput && gamepad != null &&' + $nl +
+        '                (gamepad.buttonWest.wasPressedThisFrame || gamepad.buttonNorth.wasPressedThisFrame);' + $nl +
+        '            bool keyboardShootPressed = keyboard != null && keyboard.spaceKey.wasPressedThisFrame;' + $nl +
+        '            if (activeOwnsBall && (keyboardShootPressed || gamepadShootPressed) && !passCommitted)'
+    )
+
+    if ($matchPatched -ne $matchOriginal) {
+        if (-not $matchPatched.Contains('bool gamepadShootPressed = allowHumanInput')) {
+            throw 'Could not safely apply the gamepad shot latch patch to BasketballMatchController.cs. No controller source was overwritten.'
+        }
+        $matchBackup = $matchControllerPath + '.nba2k12-backup.' + (Get-Date -Format 'yyyyMMdd_HHmmss')
+        Copy-Item -LiteralPath $matchControllerPath -Destination $matchBackup -ErrorAction Stop
+        $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+        [System.IO.File]::WriteAllText($matchControllerPath, $matchPatched, $utf8NoBom)
+        Write-Host "Applied gamepad shot/steal routing to the central match controller. Backup: $matchBackup" -ForegroundColor Yellow
+    } elseif ($matchOriginal.Contains('bool gamepadShootPressed = allowHumanInput')) {
+        Write-Host 'Gamepad shot/steal routing is already applied.' -ForegroundColor Green
+    } else {
+        throw 'The pinned BasketballMatchController.cs did not match the expected source; no controller source was overwritten.'
+    }
+} else {
+    throw "Could not find match controller source: $matchControllerPath"
+}
 # glTFast provides Unity import support for GLB/GLTF files. Keep a backup of the existing manifest.
 $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 $dependencies = $manifest.dependencies
