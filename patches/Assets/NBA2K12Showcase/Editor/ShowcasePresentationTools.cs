@@ -232,7 +232,7 @@ namespace NBA2K12Showcase.Editor
             EditorUtility.DisplayDialog("NBA2K12 Showcase", report, "OK");
         }
 
-        [MenuItem("Tools/NBA2K12 Showcase/2 - Apply Lakers vs Celtics Palette")]
+        [MenuItem("Tools/NBA2K12 Showcase/2 - Apply Heat vs Celtics Palette")]
         public static void ApplyTeamPalette()
         {
             Scene scene = SceneManager.GetActiveScene();
@@ -245,11 +245,11 @@ namespace NBA2K12Showcase.Editor
             EnsureFolder(Root);
             EnsureFolder(Teams);
             BasketballTeamAppearanceProfile home = CreateProfile(
-                Teams + "/Showcase_Lakers.asset", 0, "Los Angeles Lakers",
-                Hex("552583"), Hex("34204F"), Hex("FDB927"));
+                Teams + "/Showcase_MIAMI_HEAT.asset", 0, "Miami Heat",
+                Hex("98002E"), Hex("121212"), Hex("FFFFFF"));
             BasketballTeamAppearanceProfile away = CreateProfile(
-                Teams + "/Showcase_Celtics.asset", 1, "Boston Celtics",
-                Hex("F5F3EA"), Hex("E4E1D6"), Hex("007A33"));
+                Teams + "/Showcase_BOSTON_CELTICS.asset", 1, "Boston Celtics",
+                Hex("007A33"), Hex("F5F5F0"), Hex("FFFFFF"));
 
             int updated = 0;
             foreach (BasketballPlayerAppearance appearance in
@@ -276,7 +276,7 @@ namespace NBA2K12Showcase.Editor
             AssetDatabase.SaveAssets();
             EditorSceneManager.SaveScene(scene);
             string report = "Assigned team color profiles to " + updated + " player appearance component(s).\n\n" +
-                "Team ID 0: Lakers-inspired purple/gold.\nTeam ID 1: Celtics-inspired white/green.\n\n" +
+                "Team ID 0: 2013 Heat-inspired red/black.\nTeam ID 1: 2008 Celtics-inspired green/white.\n\n" +
                 "This uses the existing jersey, shorts and number-color system; it does not add official logos, " +
                 "authentic licensed uniform textures, or NBA player likenesses.";
             Debug.Log("[NBA2K12 Showcase] " + report);
