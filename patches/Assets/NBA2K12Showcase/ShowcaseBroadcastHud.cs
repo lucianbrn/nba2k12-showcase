@@ -46,6 +46,8 @@ namespace NBA2K12Showcase
         private GUIStyle scoreStyle;
         private GUIStyle clockLabelStyle;
         private GUIStyle clockValueStyle;
+        private GUIStyle shotClockStyle;
+        private GUIStyle dangerClockStyle;
         private GUIStyle contextStyle;
         private GUIStyle overlayTitleStyle;
         private GUIStyle overlayBodyStyle;
@@ -483,17 +485,30 @@ namespace NBA2K12Showcase
             GUI.DrawTexture(new Rect(x + 6, 30, 286, 100), homeTexture);
             GUI.DrawTexture(new Rect(x + 608, 30, 286, 100), awayTexture);
 
-            GUI.Label(new Rect(x + 18, 40, 260, 27), homeTeamName, teamStyle);
+            BasketballTeamMember ballOwner = possessionManager != null
+                ? possessionManager.Owner
+                : null;
+            if (ballOwner == null && possessionManager != null &&
+                (possessionManager.BallState == BasketballPossessionState.PassFlight ||
+                 possessionManager.BallState == BasketballPossessionState.ShotFlight))
+                ballOwner = possessionManager.Passer;
+            int attackingTeam = ballOwner != null ? ballOwner.TeamId : -1;
+
+            string homeLabel = (attackingTeam == 0 ? "▶  " : "") + homeTeamName;
+            string awayLabel = (attackingTeam == 1 ? "▶  " : "") + awayTeamName;
+            GUI.Label(new Rect(x + 18, 40, 260, 27), homeLabel, teamStyle);
             GUI.Label(new Rect(x + 18, 71, 260, 50),
                 (scoreTracker != null ? scoreTracker.TeamZeroScore : 0).ToString("00"), scoreStyle);
 
-            GUI.Label(new Rect(x + 608, 40, 260, 27), awayTeamName, teamStyle);
+            GUI.Label(new Rect(x + 608, 40, 260, 27), awayLabel, teamStyle);
             GUI.Label(new Rect(x + 608, 71, 260, 50),
                 (scoreTracker != null ? scoreTracker.TeamOneScore : 0).ToString("00"), scoreStyle);
 
             GUI.Label(new Rect(x + 302, 35, 296, 24), final ? "FINAL" : PeriodLabel(), clockLabelStyle);
             GUI.Label(new Rect(x + 302, 59, 296, 37), GetPeriodTime(), clockValueStyle);
-            GUI.Label(new Rect(x + 302, 96, 296, 24), "SHOT  " + GetShotTime(), clockLabelStyle);
+            GUI.Label(new Rect(x + 302, 96, 296, 24), "SHOT", clockLabelStyle);
+            GUI.Label(new Rect(x + 360, 96, 180, 24), GetShotTime(),
+                shotClock <= 5f && !final ? dangerClockStyle : shotClockStyle);
         }
 
         private void DrawLiveInfo()
@@ -589,6 +604,17 @@ namespace NBA2K12Showcase
                 fontStyle = FontStyle.Bold,
                 alignment = TextAnchor.MiddleCenter,
                 normal = { textColor = Color.white }
+            };
+            shotClockStyle = new GUIStyle(GUI.skin.label)
+            {
+                fontSize = 18,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter,
+                normal = { textColor = Color.white }
+            };
+            dangerClockStyle = new GUIStyle(shotClockStyle)
+            {
+                normal = { textColor = new Color(1f, 0.28f, 0.24f) }
             };
             contextStyle = new GUIStyle(GUI.skin.label)
             {
