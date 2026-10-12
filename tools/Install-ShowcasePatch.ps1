@@ -88,8 +88,8 @@ if (Test-Path -LiteralPath $inputProviderPath) {
 # Wire those same central gameplay paths to supported USB Gamepad controls.
 $matchControllerPath = Join-Path $upstreamRoot 'Assets\AI4AnimationRemake\Runtime\Control\BasketballMatchController.cs'
 if (Test-Path -LiteralPath $matchControllerPath) {
-    $matchOriginal = [System.IO.File]::ReadAllText($matchControllerPath)
-    $nl = [Environment]::NewLine
+    $matchOriginal = [System.IO.File]::ReadAllText($matchControllerPath).Replace([string][char]13 + [string][char]10, [string][char]10)
+    $nl = [string][char]10
     $matchPatched = $matchOriginal.Replace(
         '            bool primaryHeld = allowHumanInput && pointerAvailable && mouse != null &&' + $nl +
         '                               mouse.leftButton.isPressed;',
@@ -108,7 +108,8 @@ if (Test-Path -LiteralPath $matchControllerPath) {
     )
 
     if ($matchPatched -ne $matchOriginal) {
-        if (-not $matchPatched.Contains('bool gamepadShootPressed = allowHumanInput')) {
+        if (-not $matchPatched.Contains('bool gamepadShootPressed = allowHumanInput') -or
+            -not $matchPatched.Contains('Gamepad gamepad = Gamepad.current;')) {
             throw 'Could not safely apply the gamepad shot latch patch to BasketballMatchController.cs. No controller source was overwritten.'
         }
         $matchBackup = $matchControllerPath + '.nba2k12-backup.' + (Get-Date -Format 'yyyyMMdd_HHmmss')
