@@ -40,6 +40,8 @@ The earlier `NBA 2K12 Showcase Edition(1).lnk` attachment was an RPCS3 shortcut,
 
 ## Third-party assets
 
+The repository's [CC0 Asset Library note](docs/CC0_ASSET_LIBRARY.md) identifies the exact current source pack manifests, license validation, local download paths and limitations.
+
 - CC0 basketball geometry and a community indoor sports hall can be downloaded through `Tools > NBA2K12 Showcase` after glTFast resolves. The downloader checks the current pack manifest's CC0 1.0 label/license before downloading and saves the manifest/license record beside the local models. These are static props/settings, not NBA players.
 - NeuralCourt's athlete has its own third-party notice file. Follow its terms before redistributing the upstream assets.
 
