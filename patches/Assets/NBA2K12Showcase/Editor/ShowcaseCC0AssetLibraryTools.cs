@@ -30,6 +30,7 @@ namespace NBA2K12Showcase.Editor
         [Serializable] private sealed class ManifestData
         {
             public string title;
+            public string licenseLabel;
             public License license;
             public AssetRecord starterScene;
             public AssetRecord[] assets;
@@ -84,7 +85,7 @@ namespace NBA2K12Showcase.Editor
                 if (parsed == null || parsed.data == null)
                     throw new InvalidOperationException("The asset provider returned an unrecognized manifest.");
 
-                EnsureCC0(parsed.data.license, "pack");
+                EnsurePackCC0(parsed.data);
                 Directory.CreateDirectory(targetDiskPath);
                 File.WriteAllText(Path.Combine(targetDiskPath, "source-manifest.json"), json, new UTF8Encoding(false));
                 File.WriteAllText(
@@ -126,7 +127,10 @@ namespace NBA2K12Showcase.Editor
                     AssetRecord starter = parsed.data.starterScene;
                     if (starter == null)
                         throw new InvalidOperationException("No starterScene record was provided for this pack.");
-                    EnsureCC0(starter.license ?? parsed.data.license, starter.title);
+                    if (starter.license != null)
+                        EnsureCC0(starter.license, starter.title);
+                    else
+                        EnsurePackCC0(parsed.data);
                     ValidateCdnUrl(starter.cdnUrl);
                     string output = Path.Combine(targetDiskPath, Sanitize(starter.id + "_" + starter.title) + ".glb");
                     if (!File.Exists(output))
@@ -279,7 +283,8 @@ namespace NBA2K12Showcase.Editor
             SceneManager.SetActiveScene(preview);
             string savePath = AssetDatabase.GenerateUniqueAssetPath(Root + "/Previews/CC0_SportsHall_Reference.unity");
             EditorSceneManager.SaveScene(preview, savePath);
-            EditorSceneManager.OpenScene(savePath, OpenSceneMode.Single);
+            // Keep the existing gameplay scene loaded; the preview stays additive and becomes active.
+
             string message = "Created a separate preview scene: " + savePath + "\n\nThis is a CC0 municipal indoor sports centre. It is useful as a practice-gym setting reference, but it is not a pro NBA arena and has no basketball gameplay, colliders, or animated NBA players.";
             Debug.Log("[NBA2K12 Showcase] " + message);
             EditorUtility.DisplayDialog("Showcase Sports Hall Preview", message, "OK");
@@ -310,6 +315,24 @@ namespace NBA2K12Showcase.Editor
                     throw new InvalidOperationException("The file downloaded from " + url + " was empty or too small to be a model.");
                 return data;
             }
+        }
+
+        private static void EnsurePackCC0(ManifestData manifest)
+        {
+            if (manifest == null)
+                throw new InvalidOperationException("The provider returned no pack metadata.");
+
+            if (manifest.license != null)
+            {
+                EnsureCC0(manifest.license, string.IsNullOrWhiteSpace(manifest.title) ? "pack" : manifest.title);
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(manifest.licenseLabel) &&
+                manifest.licenseLabel.IndexOf("CC0 1.0 Universal", StringComparison.OrdinalIgnoreCase) >= 0)
+                return;
+
+            throw new InvalidOperationException("The provider did not identify the pack as CC0 1.0. No assets were downloaded.");
         }
 
         private static void EnsureCC0(License license, string name)
