@@ -21,8 +21,8 @@ namespace NBA2K12Showcase.Editor
         private static readonly HumanBodyBones[] RequiredBones =
         {
             HumanBodyBones.Hips,
-            HumanBodyBones.LeftUpperLeg, HumanBodyBones.LeftLowerLeg, HumanBodyBones.LeftFoot,
-            HumanBodyBones.RightUpperLeg, HumanBodyBones.RightLowerLeg, HumanBodyBones.RightFoot,
+            HumanBodyBones.LeftUpperLeg, HumanBodyBones.LeftLowerLeg, HumanBodyBones.LeftFoot, HumanBodyBones.LeftToes,
+            HumanBodyBones.RightUpperLeg, HumanBodyBones.RightLowerLeg, HumanBodyBones.RightFoot, HumanBodyBones.RightToes,
             HumanBodyBones.Spine, HumanBodyBones.Chest, HumanBodyBones.UpperChest,
             HumanBodyBones.LeftShoulder, HumanBodyBones.LeftUpperArm,
             HumanBodyBones.LeftLowerArm, HumanBodyBones.LeftHand,
