@@ -199,7 +199,7 @@ namespace NBA2K12Showcase.Editor
 
         private static void EnsurePrivateIgnoreFile()
         {
-            string path = Path.GetFullPath(PrivateRoot + "/.gitignore");
+            string path = Path.GetFullPath(Path.Combine(Application.dataPath, "NBA2K12Showcase/PrivateAssets/.gitignore"));
             const string contents =
                 "# Local proprietary/third-party imports: never commit these files.\n*\n!.gitignore\n";
             if (!File.Exists(path) || File.ReadAllText(path) != contents)
