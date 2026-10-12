@@ -18,6 +18,8 @@ namespace NBA2K12Showcase.Editor
     public static class ShowcaseQualityAuditTools
     {
         private const string ReportRoot = "Assets/NBA2K12Showcase/Reports";
+        private const int MinimumPlayerTriangles = 20000;
+        private const int MinimumPlayerTextureDimension = 1024;
 
         [MenuItem("Tools/NBA2K12 Showcase/14 - Run Full Game Readiness Audit")]
         public static void RunAudit()
@@ -56,6 +58,10 @@ namespace NBA2K12Showcase.Editor
             int renderers = 0;
             int missingMaterials = 0;
             int missingTextures = 0;
+            int playersBelowTriangleGate = 0;
+            int minimumTrianglesObserved = int.MaxValue;
+            int highestPlayerTextureDimension = 0;
+            int highResolutionTextureMaterials = 0;
 
             foreach (BasketballTeamMember player in players)
             {
@@ -76,13 +82,24 @@ namespace NBA2K12Showcase.Editor
                         validHumanoids++;
                 }
 
+                int playerTriangles = 0;
                 SkinnedMeshRenderer[] skinned = player.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                 foreach (SkinnedMeshRenderer mesh in skinned)
                 {
-                    if (mesh != null && mesh.sharedMesh != null &&
-                        mesh.bones != null && mesh.bones.Length > 0 && mesh.rootBone != null)
+                    if (mesh == null || mesh.sharedMesh == null)
+                        continue;
+                    playerTriangles += CountTriangles(mesh.sharedMesh);
+                    if (mesh.bones != null && mesh.bones.Length > 0 && mesh.rootBone != null)
                         weightedSkinnedMeshes++;
                 }
+                foreach (MeshFilter filter in player.GetComponentsInChildren<MeshFilter>(true))
+                {
+                    if (filter != null && filter.sharedMesh != null)
+                        playerTriangles += CountTriangles(filter.sharedMesh);
+                }
+                minimumTrianglesObserved = Mathf.Min(minimumTrianglesObserved, playerTriangles);
+                if (playerTriangles < MinimumPlayerTriangles)
+                    playersBelowTriangleGate++;
 
                 Renderer[] playerRenderers = player.GetComponentsInChildren<Renderer>(true);
                 renderers += playerRenderers.Length;
@@ -102,8 +119,18 @@ namespace NBA2K12Showcase.Editor
                             missingMaterials++;
                             continue;
                         }
-                        if (material.mainTexture == null)
+                        Texture texture = material.mainTexture;
+                        if (texture == null)
+                        {
                             missingTextures++;
+                        }
+                        else
+                        {
+                            int dimension = Mathf.Max(texture.width, texture.height);
+                            highestPlayerTextureDimension = Mathf.Max(highestPlayerTextureDimension, dimension);
+                            if (dimension >= MinimumPlayerTextureDimension)
+                                highResolutionTextureMaterials++;
+                        }
                     }
                 }
             }
@@ -150,6 +177,10 @@ namespace NBA2K12Showcase.Editor
                 blockers.Add("FAIL: Only " + validHumanoids + " retargeters reference a valid Humanoid Avatar.");
             if (weightedSkinnedMeshes < 10)
                 blockers.Add("FAIL: Only " + weightedSkinnedMeshes + " weighted SkinnedMeshRenderers found under player roots. A modern high-detail model may have multiple renderers per player.");
+            if (playersBelowTriangleGate > 0)
+                blockers.Add("BLOCKER: " + playersBelowTriangleGate + "/10 players are below the high-detail geometry gate of " + MinimumPlayerTriangles.ToString("N0") + " triangles per athlete. The minimum observed player mesh is " + (minimumTrianglesObserved == int.MaxValue ? 0 : minimumTrianglesObserved).ToString("N0") + " triangles. Do not accept low-poly placeholders.");
+            if (highResolutionTextureMaterials == 0)
+                blockers.Add("BLOCKER: No player material uses a texture at least " + MinimumPlayerTextureDimension + " pixels on its longest side. Face, skin, and uniform textures need real detail rather than flat color alone.");
             if (ball == null || ball.GetComponent<Rigidbody>() == null || ball.GetComponent<SphereCollider>() == null)
                 blockers.Add("FAIL: Ball physics root/controller or required Rigidbody/SphereCollider is missing.");
             if (court == null || court.PositiveZHoop == null || court.NegativeZHoop == null)
@@ -184,6 +215,8 @@ namespace NBA2K12Showcase.Editor
             report.AppendLine("Player appearances: " + appearances);
             report.AppendLine("Retargeters: " + retargeters + "; valid Humanoid avatars: " + validHumanoids);
             report.AppendLine("Weighted skinned meshes under players: " + weightedSkinnedMeshes);
+            report.AppendLine("Player triangles: minimum " + (minimumTrianglesObserved == int.MaxValue ? 0 : minimumTrianglesObserved).ToString("N0") + " per athlete; below " + MinimumPlayerTriangles.ToString("N0") + ": " + playersBelowTriangleGate + "/10");
+            report.AppendLine("Player textures: highest longest-side dimension " + highestPlayerTextureDimension + " px; 1K+ texture materials " + highResolutionTextureMaterials);
             report.AppendLine("Player renderers: " + renderers + "; missing material slots: " + missingMaterials + "; textureless materials: " + missingTextures);
             report.AppendLine("Global skinned meshes in scene: " + skinnedCount);
             report.AppendLine("Assigned per-player model variants: " + mappedVisualVariants + "/10");
@@ -219,6 +252,17 @@ namespace NBA2K12Showcase.Editor
                 ".\n\nThis is a structural check only; Play Mode visual checks are still required.",
                 "OK");
         }
+        private static int CountTriangles(Mesh mesh)
+        {
+            if (mesh == null)
+                return 0;
+
+            long total = 0;
+            for (int submesh = 0; submesh < mesh.subMeshCount; submesh++)
+                total += (long)(mesh.GetIndexCount(submesh) / 3UL);
+            return total > int.MaxValue ? int.MaxValue : (int)total;
+        }
+
     }
 }
 #endif
