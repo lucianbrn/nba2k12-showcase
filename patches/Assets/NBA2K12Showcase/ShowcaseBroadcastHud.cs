@@ -79,6 +79,27 @@ namespace NBA2K12Showcase
                 scoreTracker.Scored += HandleScore;
         }
 
+        private void Start()
+        {
+            // The upstream UIToolkit starts in a neural-debug view. Switch its view to
+            // gameplay mode so debug telemetry does not cover the broadcast HUD.
+            BasketballUIToolkitController upstreamHud =
+                UnityEngine.Object.FindFirstObjectByType<BasketballUIToolkitController>();
+            if (upstreamHud != null)
+            {
+                upstreamHud.TogglePrimaryHud();
+                upstreamHud.SetMatchStatus("NBA 2K SHOWCASE");
+            }
+
+            foreach (BasketballDebugVisualizer visualizer in
+                     UnityEngine.Object.FindObjectsByType<BasketballDebugVisualizer>(
+                         FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (visualizer != null && visualizer.gameObject.scene == gameObject.scene)
+                    visualizer.SetVisible(false);
+            }
+        }
+
         private void OnDisable()
         {
             if (scoreTracker != null)
