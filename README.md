@@ -41,6 +41,7 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 - **12 — Install CC0 Basketball Mesh on Live Ball:** replaces the ball's renderer with the downloaded 240 mm GLB mesh while retaining the original physics root.
 - **13 — Create Separate CC0 Sports Hall Preview:** creates a separate additive preview scene, not the main basketball arena.
 - **14 — Run Full Game Readiness Audit:** writes a local report with player counts, valid Humanoid Avatar counts, weighted meshes, ball/court references, camera, and blockers.
+- **15 — Assign P01-P10 Player Models by Filename:** validates and maps compatible imported models to player indices automatically.
 
 ### First Unity run
 
@@ -51,6 +52,8 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 5. Enter Play Mode and test movement, passing, shooting, scoring, shot-clock violations, quarter transitions, and pause/resume.
 
 Menu items 10–13 download/use CC0 **static setting and prop geometry**. The sports centre is a community gym reference, not a pro NBA arena. It has no basketball logic, colliders, or animated players.
+
+For distinct player models, name the imported files `P01_Name.fbx` through `P10_Name.fbx`. Use items 4, 6, and 7 to configure/preview/audit a model, item 8 to install P01 as the shared fallback, then item 15 to assign available model files to player slots. The assignment tool rejects models without a valid Humanoid Avatar, required bones, and a weighted SkinnedMeshRenderer.
 
 ## Real players and uniforms
 
