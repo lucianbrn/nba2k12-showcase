@@ -75,7 +75,9 @@ namespace NBA2K12Showcase.Editor
         [MenuItem("Tools/NBA2K12 Showcase/19 - Matchup: 2008 Celtics vs 2017 Warriors")]
         private static void CelticsVsWarriors() => Apply(Celtics2008, Warriors2017);
 
-        private static void Apply(Team home, Team away)
+        public static void ApplyDefaultHeatCeltics() => Apply(Heat2013, Celtics2008, false);
+
+        private static void Apply(Team home, Team away, bool requireConfirmation = true)
         {
             Scene scene = SceneManager.GetActiveScene();
             if (!scene.IsValid() || scene.path != DemoScene)
