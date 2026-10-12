@@ -79,13 +79,6 @@ namespace NBA2K12Showcase
                 scoreTracker.Scored += HandleScore;
         }
 
-        private void Start()
-        {
-            ResolveReferences();
-            if (scoreTracker != null)
-                scoreTracker.Scored += HandleScore;
-        }
-
         private void OnDisable()
         {
             if (scoreTracker != null)
@@ -398,8 +391,6 @@ namespace NBA2K12Showcase
             const float x = (1920f - width) * 0.5f;
             GUI.Box(new Rect(x, 24, width, 112), GUIContent.none, panelStyle);
 
-            Color home = new Color(0.23f, 0.08f, 0.39f, 0.98f);
-            Color away = new Color(0.0f, 0.28f, 0.15f, 0.98f);
             GUI.DrawTexture(new Rect(x + 6, 30, 286, 100), homeTexture);
             GUI.DrawTexture(new Rect(x + 608, 30, 286, 100), awayTexture);
 
