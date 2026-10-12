@@ -36,6 +36,11 @@ namespace NBA2K12Showcase.Editor
                 return;
             }
 
+            Debug.Log("[NBA2K12 Showcase] Quick Start: attaching USB gamepad support.");
+            var matchController = Object.FindFirstObjectByType<CrowdEyes.AI4Animation.Basketball.BasketballMatchController>();
+            if (matchController != null && matchController.GetComponent<ShowcaseGamepadSupport>() == null)
+                Undo.AddComponent<ShowcaseGamepadSupport>(matchController.gameObject);
+
             Debug.Log("[NBA2K12 Showcase] Quick Start: applying broadcast roster/HUD.");
             ShowcaseGameSetupTools.ApplyBroadcastAndRoster();
 
