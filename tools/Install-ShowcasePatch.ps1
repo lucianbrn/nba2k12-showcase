@@ -60,6 +60,30 @@ if (-not (Test-Path $manifestPath)) { throw "Unity Packages/manifest.json was no
 New-Item -ItemType Directory -Path $target -Force | Out-Null
 Copy-Item -Path (Join-Path $source '*') -Destination $target -Recurse -Force
 
+# Map common USB gamepad controls to basketball-style actions in the pinned source provider.
+# Keep a timestamped backup and make this patch idempotent.
+$inputProviderPath = Join-Path $upstreamRoot 'Assets\AI4AnimationRemake\Runtime\Control\BasketballKeyboardMouseInputProvider.cs'
+if (Test-Path -LiteralPath $inputProviderPath) {
+    $providerOriginal = [System.IO.File]::ReadAllText($inputProviderPath)
+    $providerPatched = $providerOriginal.Replace(
+        'Sprint = gamepad.leftStickButton.isPressed,',
+        'Sprint = gamepad.rightTrigger.ReadValue() > 0.35f || gamepad.leftStickButton.isPressed,')
+    $providerPatched = $providerPatched.Replace(
+        'Shoot = gamepad.buttonNorth.isPressed,',
+        'Shoot = gamepad.buttonWest.isPressed || gamepad.buttonNorth.isPressed,')
+    if ($providerPatched -ne $providerOriginal) {
+        $providerBackup = $inputProviderPath + '.nba2k12-backup.' + (Get-Date -Format 'yyyyMMdd_HHmmss')
+        Copy-Item -LiteralPath $inputProviderPath -Destination $providerBackup -ErrorAction Stop
+        $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+        [System.IO.File]::WriteAllText($inputProviderPath, $providerPatched, $utf8NoBom)
+        Write-Host "Applied USB gamepad sprint/shoot mappings. Backup: $providerBackup" -ForegroundColor Yellow
+    } else {
+        Write-Host 'USB gamepad sprint/shoot mappings are already applied.' -ForegroundColor Green
+    }
+} else {
+    Write-Warning "Could not find gamepad input provider at $inputProviderPath. USB controller setup will retain upstream mappings."
+}
+
 # glTFast provides Unity import support for GLB/GLTF files. Keep a backup of the existing manifest.
 $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 $dependencies = $manifest.dependencies
@@ -94,4 +118,4 @@ Write-Host 'NBA2K12 Showcase editor patch installed.' -ForegroundColor Green
 Write-Host "Unity project: $upstreamRoot"
 Write-Host 'Open the NeuralCourt folder in Unity Hub, then open Assets/Scenes/BasketballDemo.unity.'
 Write-Host 'Unity may need a few minutes to resolve the newly added glTFast package.'
-Write-Host 'Use Tools > NBA2K12 Showcase to apply the broadcast HUD/roster, presentation settings, and CC0 asset tools.'
+Write-Host 'Use Tools > NBA2K12 Showcase/16 - One-Click Core Setup for the 2013 Heat vs 2008 Celtics default. Connect a wired USB Xbox/PlayStation controller before Play Mode; D-pad switches players, right trigger sprints, X/Square or Y/Triangle shoots, left trigger + A/Cross passes, and Start pauses. Tools 17-19 select the only supported team pairings: 2013 Heat, 2008 Celtics, and 2017 Warriors.'
