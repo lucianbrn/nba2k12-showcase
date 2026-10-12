@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Linq;
 using CrowdEyes.AI4Animation.Basketball;
 using UnityEngine;
@@ -92,7 +91,6 @@ namespace NBA2K12Showcase
         private Texture2D primaryTexture;
         private Texture2D secondaryTexture;
         private bool stylesReady;
-        private bool beginRequested;
 
         private void Update()
         {
@@ -150,7 +148,6 @@ namespace NBA2K12Showcase
                 return;
             selectedTeam = Mathf.Clamp(teamIndex, 0, teams.Length - 1);
             state = FlowState.Roster;
-            beginRequested = false;
         }
 
         private void StartIntro()
@@ -159,7 +156,6 @@ namespace NBA2K12Showcase
             {
                 state = FlowState.Intro;
                 introStarted = Time.unscaledTime;
-                beginRequested = true;
             }
             else
             {
