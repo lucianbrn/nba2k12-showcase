@@ -17,5 +17,6 @@ This overlay adds presentation, private model import, and rig integration tools 
 - **8 - Replace In-Game Player Visual with Selected Model (LOCAL):** backs up the existing visual prefab outside the Unity project, then swaps its fallback model for the selected imported Humanoid model. This modifies the local NeuralCourt submodule only.
 
 After menu item 8, configure `ShowcasePlayerVisualVariant` on the source visual prefab to assign up to ten model prefabs by Player Index (P1-P10 = 0-9). This is how distinct faces/body meshes can be mapped to roster slots instead of cloning a single model. Each variant must have a valid Humanoid Avatar and matching texture/material assignments.
+Do not rerun the upstream `Tools > AI4Animation > Build CrowdEyes-Twin 5v5 Basketball Demo` builder after replacing the shared player prefab unless you back it up first; that builder regenerates the original synthetic demo.
 
 The tools are an integration path, not the assets themselves. Previewing a model or swapping one fallback does not prove that the project meets the visual acceptance gate. See [docs/NBA2K12_ASSET_PIPELINE.md](../docs/NBA2K12_ASSET_PIPELINE.md) and [docs/HIGH_FIDELITY_ACCEPTANCE_GATE.md](../docs/HIGH_FIDELITY_ACCEPTANCE_GATE.md).
