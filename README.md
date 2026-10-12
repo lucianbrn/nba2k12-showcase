@@ -54,7 +54,11 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 2. Run **0** and **1** for gameplay framing and URP presentation.
 3. Run **10**, wait for the downloads and Unity's GLB import, then run **12** to install the CC0 basketball mesh.
 4. Run **14** and review the generated readiness report.
-5. Run **16** to attach gamepad support, then enter Play Mode and test movement, passing, shooting, scoring, shot-clock violations, quarter transitions, and pause/resume.
+5. Run **16** to apply the default 2013 Heat vs 2008 Celtics matchup and attach gamepad support, then enter Play Mode and test movement, passing, shooting, scoring, shot-clock violations, quarter transitions, and pause/resume. Use menu items **17–19** to select either of the other matchups.
+
+### Wired USB controller
+
+Connect a supported Xbox or PlayStation controller by USB before or during Play Mode. Left stick moves, right stick controls ball handling, left-stick click sprints, Y/Triangle shoots, LB/RB or D-pad left/right switches teammates, Start pauses, and LT + A/Cross requests a pass in the right-stick direction. Keyboard/mouse remains available and takes control when used. Windows and Unity must recognize the device as a supported Gamepad; generic HID controllers may need a mapping.
 
 Menu items 10–13 download/use CC0 **static setting and prop geometry**. The sports centre is a community gym reference, not a pro NBA arena. It has no basketball logic, colliders, or animated players.
 
