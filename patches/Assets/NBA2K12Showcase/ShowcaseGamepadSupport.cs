@@ -1,0 +1,154 @@
+using System.Linq;
+using CrowdEyes.AI4Animation.Basketball;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+namespace NBA2K12Showcase
+{
+    /// <summary>
+    /// Adds wired gamepad-first match controls while preserving keyboard/mouse fallback.
+    /// Unity Input System discovers supported USB Xbox and PlayStation controllers.
+    /// </summary>
+    [DefaultExecutionOrder(-200)]
+    [DisallowMultipleComponent]
+    public sealed class ShowcaseGamepadSupport : MonoBehaviour
+    {
+        private BasketballMatchController match;
+        private BasketballTeamMember[] players = System.Array.Empty<BasketballTeamMember>();
+        private bool gamepadMode;
+
+        private void Awake()
+        {
+            match = FindFirstObjectByType<BasketballMatchController>();
+            RefreshPlayers();
+        }
+
+        private void Update()
+        {
+            if (match == null)
+                match = FindFirstObjectByType<BasketballMatchController>();
+            if (match == null)
+                return;
+
+            RefreshPlayers();
+            Gamepad pad = Gamepad.current;
+            Keyboard keyboard = Keyboard.current;
+
+            bool gamepadActive = pad != null &&
+                (pad.leftStick.ReadValue().sqrMagnitude > 0.04f ||
+                 pad.rightStick.ReadValue().sqrMagnitude > 0.04f ||
+                 pad.dpad.ReadValue().sqrMagnitude > 0f ||
+                 pad.buttonSouth.wasPressedThisFrame ||
+                 pad.buttonEast.wasPressedThisFrame ||
+                 pad.buttonWest.wasPressedThisFrame ||
+                 pad.buttonNorth.wasPressedThisFrame ||
+                 pad.leftShoulder.wasPressedThisFrame ||
+                 pad.rightShoulder.wasPressedThisFrame ||
+                 pad.startButton.wasPressedThisFrame ||
+                 pad.leftStickButton.wasPressedThisFrame ||
+                 pad.leftTrigger.wasPressedThisFrame);
+
+            bool keyboardActive = keyboard != null &&
+                (keyboard.wKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
+                 keyboard.sKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame ||
+                 keyboard.spaceKey.wasPressedThisFrame || keyboard.tabKey.wasPressedThisFrame ||
+                 keyboard.leftShiftKey.wasPressedThisFrame || keyboard.leftCtrlKey.wasPressedThisFrame);
+
+            if (pad == null)
+                SetGamepadMode(false);
+            else if (gamepadActive)
+                SetGamepadMode(true);
+            else if (keyboardActive)
+                SetGamepadMode(false);
+
+            if (!gamepadMode || pad == null)
+                return;
+
+            if (pad.leftShoulder.wasPressedThisFrame || pad.dpad.left.wasPressedThisFrame)
+                SelectNext(-1);
+            else if (pad.rightShoulder.wasPressedThisFrame || pad.dpad.right.wasPressedThisFrame)
+                SelectNext(1);
+
+            // Left trigger + A/cross requests a legal pass to the teammate indicated
+            // by the right stick (or the nearest teammate if no direction is supplied).
+            if (pad.leftTrigger.ReadValue() > 0.55f && pad.buttonSouth.wasPressedThisFrame)
+                TryPass(pad.rightStick.ReadValue());
+        }
+
+        private void RefreshPlayers()
+        {
+            players = FindObjectsByType<BasketballTeamMember>(
+                    FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .Where(p => p != null && p.gameObject.scene == gameObject.scene)
+                .OrderBy(p => p.PlayerIndex)
+                .ToArray();
+        }
+
+        private void SetGamepadMode(bool enabled)
+        {
+            if (gamepadMode == enabled)
+                return;
+            gamepadMode = enabled;
+            foreach (BasketballTeamMember player in players)
+            {
+                if (player?.InputProvider == null)
+                    continue;
+                var mode = enabled
+                    ? BasketballKeyboardMouseInputProvider.InputMode.Gamepad
+                    : BasketballKeyboardMouseInputProvider.InputMode.Keyboard;
+                if (player.InputProvider.Mode != mode)
+                    player.InputProvider.SetMode(mode);
+            }
+            Debug.Log("[NBA2K12 Showcase] Active input: " +
+                      (enabled ? "gamepad (USB supported)" : "keyboard/mouse"), this);
+        }
+
+        private void SelectNext(int direction)
+        {
+            if (match == null || players.Length == 0)
+                return;
+            int teamId = match.ActivePlayer != null ? match.ActivePlayer.TeamId : 0;
+            BasketballTeamMember[] eligible = players
+                .Where(p => p != null && p.IsOnCourt && p.TeamId == teamId)
+                .OrderBy(p => p.PlayerIndex)
+                .ToArray();
+            if (eligible.Length < 2)
+                return;
+            int current = System.Array.FindIndex(eligible,
+                p => p.PlayerIndex == match.ActivePlayerIndex);
+            int next = (current + direction + eligible.Length) % eligible.Length;
+            match.SelectPlayer(eligible[next].PlayerIndex);
+        }
+
+        private void TryPass(Vector2 aim)
+        {
+            BasketballTeamMember active = match != null ? match.ActivePlayer : null;
+            if (active == null || match.Owner != active || match.PossessionManager == null)
+                return;
+
+            Vector3 direction = aim.sqrMagnitude > 0.09f
+                ? new Vector3(aim.x, 0f, aim.y).normalized
+                : active.transform.forward;
+            BasketballTeamMember target = players
+                .Where(p => p != null && p.IsOnCourt && p.TeamId == active.TeamId && p != active)
+                .Select(p => new
+                {
+                    Player = p,
+                    Offset = p.transform.position - active.transform.position
+                })
+                .OrderByDescending(item =>
+                {
+                    Vector3 offset = item.Offset;
+                    offset.y = 0f;
+                    return Vector3.Dot(direction, offset.sqrMagnitude > 0.001f
+                        ? offset.normalized : direction);
+                })
+                .ThenBy(item => item.Offset.sqrMagnitude)
+                .Select(item => item.Player)
+                .FirstOrDefault();
+
+            if (target != null && match.PossessionManager.RequestPass(active, target))
+                Debug.Log("[NBA2K12 Showcase] Gamepad pass requested to player " + target.PlayerIndex, this);
+        }
+    }
+}
