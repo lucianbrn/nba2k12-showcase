@@ -31,8 +31,6 @@ namespace NBA2K12Showcase
         private readonly int[] playerPoints = new int[10];
         private readonly int[] playerFieldGoalsMade = new int[10];
         private readonly int[] playerThreePointersMade = new int[10];
-        private readonly int[] teamFieldGoalsMade = new int[2];
-        private readonly int[] teamThreePointersMade = new int[2];
         private float gameClock;
         private float shotClock;
         private int period = 1;
@@ -305,12 +303,6 @@ namespace NBA2K12Showcase
                 playerFieldGoalsMade[score.PlayerIndex]++;
                 if (score.Points == 3) playerThreePointersMade[score.PlayerIndex]++;
             }
-            if (score.TeamId >= 0 && score.TeamId < teamFieldGoalsMade.Length)
-            {
-                teamFieldGoalsMade[score.TeamId]++;
-                if (score.Points == 3) teamThreePointersMade[score.TeamId]++;
-            }
-
             ShowcasePlayerIdentity identity = scorer != null
                 ? scorer.GetComponent<ShowcasePlayerIdentity>()
                 : null;
@@ -415,8 +407,6 @@ namespace NBA2K12Showcase
             Array.Clear(playerPoints, 0, playerPoints.Length);
             Array.Clear(playerFieldGoalsMade, 0, playerFieldGoalsMade.Length);
             Array.Clear(playerThreePointersMade, 0, playerThreePointersMade.Length);
-            Array.Clear(teamFieldGoalsMade, 0, teamFieldGoalsMade.Length);
-            Array.Clear(teamThreePointersMade, 0, teamThreePointersMade.Length);
 
             period = 1;
             overtime = false;
