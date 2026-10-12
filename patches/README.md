@@ -23,9 +23,10 @@ Run `tools/Install-ShowcasePatch.ps1` from the repository root. It copies the ov
 - **12 — Install CC0 Basketball Mesh on Live Ball:** replaces ball rendering only; keeps physics/authority.
 - **13 — Create Separate CC0 Sports Hall Preview:** opens an additive local scene for the gym asset.
 - **14 — Run Full Game Readiness Audit:** writes a structural report to `Assets/NBA2K12Showcase/Reports`.
+- **15 — Assign P01-P10 Player Models by Filename:** validates compatible local models and fills player indices 0–9.
 
 Run items 9, 0, 1, 10, 12, and 14 for the first local setup. The CC0 props and sports centre are a legal content improvement and environment reference; they are not authentic NBA 2K12 assets and do not meet the pro-arena/real-athlete bar by themselves.
 
-For private model integration, use items 4, 5, 6, 7, and 8 in that order. Separate visual models can be assigned on `ShowcasePlayerVisualVariant` by Player Index 0–9. Every variant must be a valid Humanoid Avatar with the required bones and weighted SkinnedMeshRenderer. Preview success does not prove live animation compatibility.
+For private model integration, import separate exports named `P01_Name.fbx` through `P10_Name.fbx`. Use items 4, 6, and 7 to configure/preview/audit P01, item 8 to install P01 as the shared fallback, then item 15 to assign the available models to roster slots. Every model must have a valid Humanoid Avatar, required bones, and weighted SkinnedMeshRenderer. Preview success does not prove live animation compatibility.
 
 See [docs/CC0_ASSET_LIBRARY.md](../docs/CC0_ASSET_LIBRARY.md) for the actual public asset sources and license-validation workflow, [docs/NBA2K12_ASSET_PIPELINE.md](../docs/NBA2K12_ASSET_PIPELINE.md) for the PS3/PC asset boundary, and [docs/HIGH_FIDELITY_ACCEPTANCE_GATE.md](../docs/HIGH_FIDELITY_ACCEPTANCE_GATE.md) for the completion bar.
