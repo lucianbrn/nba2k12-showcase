@@ -71,7 +71,9 @@ if ($null -eq $gltfProperty) {
     Copy-Item -LiteralPath $manifestPath -Destination $backupPath -ErrorAction Stop
     Add-Member -InputObject $dependencies -MemberType NoteProperty -Name 'com.unity.cloud.gltfast' -Value '6.20.0'
     $json = $manifest | ConvertTo-Json -Depth 100
-    Set-Content -LiteralPath $manifestPath -Value $json -Encoding UTF8
+    # Windows PowerShell's UTF8 encoding adds a BOM, which Unity's package manifest parser can reject.
+    $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+    [System.IO.File]::WriteAllText($manifestPath, $json, $utf8NoBom)
     Write-Host "Added glTFast 6.20.0. Original manifest backed up to: $backupPath" -ForegroundColor Yellow
 } elseif ([string]$gltfProperty.Value -ne '6.20.0') {
     Write-Host "glTFast is already configured as $($gltfProperty.Value). The installer did not change your chosen version." -ForegroundColor Yellow
