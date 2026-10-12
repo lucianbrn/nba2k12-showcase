@@ -98,7 +98,7 @@ namespace NBA2K12Showcase.Editor
                 return;
             }
 
-            if (!EditorUtility.DisplayDialog("Era Matchup",
+            if (requireConfirmation && !EditorUtility.DisplayDialog("Era Matchup",
                 "Set " + home.Name + " vs " + away.Name + "?\n\nThis changes player names, jersey numbers, team colors and scoreboard labels. It does not install authentic NBA player meshes, uniforms or animations.",
                 "Apply Matchup", "Cancel"))
                 return;
