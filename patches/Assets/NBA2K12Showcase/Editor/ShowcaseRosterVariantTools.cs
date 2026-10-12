@@ -83,6 +83,11 @@ namespace NBA2K12Showcase.Editor
                     continue;
                 }
 
+                if (candidates.ContainsKey(playerIndex))
+                {
+                    rejected.Add(fileName + ": duplicate file for P" + slotNumber.ToString("00") + "; kept the first valid asset.");
+                    continue;
+                }
                 candidates[playerIndex] = prefab;
             }
 
@@ -142,8 +147,9 @@ namespace NBA2K12Showcase.Editor
                 {
                     SerializedProperty slot = slots.GetArrayElementAtIndex(index);
                     slot.FindPropertyRelative("playerIndex").intValue = index;
-                    slot.FindPropertyRelative("modelPrefab").objectReferenceValue =
-                        candidates.TryGetValue(index, out GameObject model) ? model : null;
+                    SerializedProperty modelProperty = slot.FindPropertyRelative("modelPrefab");
+                    if (candidates.TryGetValue(index, out GameObject model))
+                        modelProperty.objectReferenceValue = model;
                 }
                 serialized.ApplyModifiedPropertiesWithoutUndo();
                 EditorUtility.SetDirty(variant);
