@@ -68,7 +68,7 @@ namespace NBA2K12Showcase.Editor
             string destinationAsset = PrivateRoot + "/" + name;
             EnsureFolder(destinationAsset);
             string sourceRoot = source.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            string destinationRoot = Path.GetFullPath(destinationAsset);
+            string destinationRoot = Path.GetFullPath(Path.Combine(Application.dataPath, "NBA2K12Showcase/PrivateAssets/" + name));
             int copied = 0, models = 0, textures = 0;
 
             foreach (string file in files)
