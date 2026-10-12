@@ -87,6 +87,10 @@ namespace NBA2K12Showcase.Editor
 
                 EnsurePackCC0(parsed.data);
                 Directory.CreateDirectory(targetDiskPath);
+                File.WriteAllText(
+                    Path.Combine(targetDiskPath, ".gitignore"),
+                    "*"+Environment.NewLine+"!.gitignore"+Environment.NewLine,
+                    new UTF8Encoding(false));
                 File.WriteAllText(Path.Combine(targetDiskPath, "source-manifest.json"), json, new UTF8Encoding(false));
                 File.WriteAllText(
                     Path.Combine(targetDiskPath, "LICENSE_CC0.txt"),
