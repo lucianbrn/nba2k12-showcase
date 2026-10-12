@@ -117,7 +117,8 @@ if (Test-Path -LiteralPath $matchControllerPath) {
         $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
         [System.IO.File]::WriteAllText($matchControllerPath, $matchPatched, $utf8NoBom)
         Write-Host "Applied gamepad shot/steal routing to the central match controller. Backup: $matchBackup" -ForegroundColor Yellow
-    } elseif ($matchOriginal.Contains('bool gamepadShootPressed = allowHumanInput')) {
+    } elseif ($matchOriginal.Contains('bool gamepadShootPressed = allowHumanInput') -and
+              $matchOriginal.Contains('Gamepad gamepad = Gamepad.current;')) {
         Write-Host 'Gamepad shot/steal routing is already applied.' -ForegroundColor Green
     } else {
         throw 'The pinned BasketballMatchController.cs did not match the expected source; no controller source was overwritten.'
