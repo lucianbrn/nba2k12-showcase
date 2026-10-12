@@ -21,6 +21,18 @@ This particular game ID, `BLUS-30944`, is listed as the PS3 NBA 2K12: Game of th
 
 **Practical consequence:** a real NBA 2K-style player cannot be produced from the PS3 shortcut, a roster file, or a jersey texture alone. We need a verified model export with mesh/UV/skeleton plus matching face/body/uniform textures. If the PS3 container stage cannot produce that, a legal PC NBA 2K12 IFF export workflow (if you have access to one) or a separately licensed realistic player asset is the viable source for the Unity import path.
 
+## NBA2K-Dataset source supplied for this project
+
+Repository: https://github.com/luyangzhu/NBA2K-dataset
+
+This is a research dataset captured from NBA 2K19, not a ready-to-import asset pack for the 2013 Heat, 2008 Celtics, or 2017 Warriors. Its README says the released download contains data for 28 synthetic players because current NBA player data cannot be redistributed. The full images/pose/mesh archives must be requested through the project's form; the repository says processing the raw archives requires more than 100 GB of disk space.
+
+The data includes OBJ triangle meshes, UV texture maps, pose/bone transform arrays, and mesh weights for linear blend skinning. Those are useful research inputs, but the repository does not provide Unity-ready skinned FBX prefabs or finished animation clips. An import pipeline would still need to reconstruct/retarget the skeleton, preserve weights and UVs, generate usable motion, build uniforms/materials, and validate the result in Unity.
+
+**License constraint:** CC BY-NC-SA 4.0 (University of Washington), which allows non-commercial use with attribution and share-alike requirements. Do not use it for a commercial release without separate permission. Do not describe these synthetic players as authentic LeBron James, Dwyane Wade, Kevin Garnett, or Stephen Curry assets; this dataset does not provide those current-player meshes in the public release.
+
+This source is the best research lead for higher-detail clothed mesh and pose data, but it does not by itself complete the requested team-specific roster, realistic uniform fitting, or animation system. No dataset archives have been downloaded or integrated by this repository update.
+
 ## Required format handoff
 
 1. Keep the original disc/ISO and all source archives untouched.
