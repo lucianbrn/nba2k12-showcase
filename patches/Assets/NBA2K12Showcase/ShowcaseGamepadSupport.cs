@@ -6,8 +6,9 @@ using UnityEngine.InputSystem;
 namespace NBA2K12Showcase
 {
     /// <summary>
-    /// Adds wired gamepad-first match controls while preserving keyboard/mouse fallback.
-    /// Unity Input System discovers supported USB Xbox and PlayStation controllers.
+    /// Adds gamepad-first match controls using Unity's Input System. Standard wired USB
+    /// Xbox and supported PlayStation controllers are normally exposed through Gamepad.
+    /// Keyboard/mouse remains a fallback. This component does not replace the simulation.
     /// </summary>
     [DefaultExecutionOrder(-200)]
     [DisallowMultipleComponent]
@@ -21,6 +22,7 @@ namespace NBA2K12Showcase
         {
             match = FindFirstObjectByType<BasketballMatchController>();
             RefreshPlayers();
+            SetGamepadMode(Gamepad.current != null);
         }
 
         private void Update()
@@ -46,13 +48,15 @@ namespace NBA2K12Showcase
                  pad.rightShoulder.wasPressedThisFrame ||
                  pad.startButton.wasPressedThisFrame ||
                  pad.leftStickButton.wasPressedThisFrame ||
-                 pad.leftTrigger.wasPressedThisFrame);
+                 pad.leftTrigger.wasPressedThisFrame ||
+                 pad.rightTrigger.wasPressedThisFrame);
 
             bool keyboardActive = keyboard != null &&
                 (keyboard.wKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
                  keyboard.sKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame ||
                  keyboard.spaceKey.wasPressedThisFrame || keyboard.tabKey.wasPressedThisFrame ||
-                 keyboard.leftShiftKey.wasPressedThisFrame || keyboard.leftCtrlKey.wasPressedThisFrame);
+                 keyboard.leftShiftKey.wasPressedThisFrame || keyboard.leftCtrlKey.wasPressedThisFrame ||
+                 keyboard.escapeKey.wasPressedThisFrame);
 
             if (pad == null)
                 SetGamepadMode(false);
@@ -69,8 +73,6 @@ namespace NBA2K12Showcase
             else if (pad.rightShoulder.wasPressedThisFrame || pad.dpad.right.wasPressedThisFrame)
                 SelectNext(1);
 
-            // Left trigger + A/cross requests a legal pass to the teammate indicated
-            // by the right stick (or the nearest teammate if no direction is supplied).
             if (pad.leftTrigger.ReadValue() > 0.55f && pad.buttonSouth.wasPressedThisFrame)
                 TryPass(pad.rightStick.ReadValue());
         }
@@ -86,9 +88,16 @@ namespace NBA2K12Showcase
 
         private void SetGamepadMode(bool enabled)
         {
-            if (gamepadMode == enabled)
-                return;
+            bool changed = gamepadMode != enabled;
             gamepadMode = enabled;
+            ApplyInputMode(enabled);
+            if (changed)
+                Debug.Log("[NBA2K12 Showcase] Active input: " +
+                          (enabled ? "gamepad (USB supported where exposed by Input System)" : "keyboard/mouse"), this);
+        }
+
+        private void ApplyInputMode(bool enabled)
+        {
             foreach (BasketballTeamMember player in players)
             {
                 if (player?.InputProvider == null)
@@ -99,8 +108,6 @@ namespace NBA2K12Showcase
                 if (player.InputProvider.Mode != mode)
                     player.InputProvider.SetMode(mode);
             }
-            Debug.Log("[NBA2K12 Showcase] Active input: " +
-                      (enabled ? "gamepad (USB supported)" : "keyboard/mouse"), this);
         }
 
         private void SelectNext(int direction)
@@ -131,17 +138,12 @@ namespace NBA2K12Showcase
                 : active.transform.forward;
             BasketballTeamMember target = players
                 .Where(p => p != null && p.IsOnCourt && p.TeamId == active.TeamId && p != active)
-                .Select(p => new
-                {
-                    Player = p,
-                    Offset = p.transform.position - active.transform.position
-                })
+                .Select(p => new { Player = p, Offset = p.transform.position - active.transform.position })
                 .OrderByDescending(item =>
                 {
                     Vector3 offset = item.Offset;
                     offset.y = 0f;
-                    return Vector3.Dot(direction, offset.sqrMagnitude > 0.001f
-                        ? offset.normalized : direction);
+                    return Vector3.Dot(direction, offset.sqrMagnitude > 0.001f ? offset.normalized : direction);
                 })
                 .ThenBy(item => item.Offset.sqrMagnitude)
                 .Select(item => item.Player)
