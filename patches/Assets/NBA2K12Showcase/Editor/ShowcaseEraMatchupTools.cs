@@ -40,7 +40,7 @@ namespace NBA2K12Showcase.Editor
             Players = new[] {
                 new Player("Mario Chalmers", "PG", 15), new Player("Dwyane Wade", "SG", 3),
                 new Player("LeBron James", "SF", 6), new Player("Chris Bosh", "PF", 1),
-                new Player("Udonis Haslem", "C", 40)
+                new Player("Ray Allen", "SG", 34)
             }
         };
 
@@ -106,11 +106,6 @@ namespace NBA2K12Showcase.Editor
             BasketballTeamAppearanceProfile homeProfile = Profile(home, 0);
             BasketballTeamAppearanceProfile awayProfile = Profile(away, 1);
             int changed = 0;
-
-            foreach (Player player in home.Players.Select((p, i) => new { p, i }).Select(x => x.p))
-            {
-                // Applied below by the stable player-index order.
-            }
 
             for (int i = 0; i < 10; i++)
             {
