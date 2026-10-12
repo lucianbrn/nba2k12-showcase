@@ -138,8 +138,19 @@ namespace NBA2K12Showcase
                 return;
 
             Keyboard keyboard = Keyboard.current;
+            Gamepad gamepad = Gamepad.current;
             if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame && !final && !periodEnded)
                 SetPaused(!paused);
+
+            if (gamepad != null && gamepad.startButton.wasPressedThisFrame && !final && !periodEnded)
+                SetPaused(!paused);
+
+            if (gamepad != null && gamepad.buttonSouth.wasPressedThisFrame && (paused || periodEnded || final))
+            {
+                if (final) RestartGame();
+                else if (periodEnded) NextPeriod();
+                else SetPaused(false);
+            }
 
             if (keyboard != null && IsClockRunning)
                 ProcessPlayerSwitchInput(keyboard);
