@@ -15,8 +15,9 @@ Source: https://github.com/henry753951/neuralcourt-basketball
 ## Added in the showcase repository
 
 - Wider/elevated gameplay camera preset and URP TV-grade post-processing.
-- Live broadcast HUD tied to the real score tracker and possession manager.
-- 12-minute quarter clock, 24-second shot clock, shot-clock turnover, offensive-rebound 14-second reset, pause, period-end and overtime/final flow.
+- Live broadcast HUD tied to the real score tracker and possession manager, including possession arrow and low-shot-clock warning.
+- 12-minute quarter clock, 24-second shot clock, shot-clock turnover, offensive-rebound 14-second reset, dead-ball timing pause, buzzer-beater allowance, pause/restart, period/overtime/final flow, and period-by-period scoring.
+- Active-player points, field goals made, three-pointers made, and scorer callouts driven only by actual made-basket events.
 - 2011-12 Lakers/Celtics demonstration roster names, positions and numbers.
 - Local-only FBX/OBJ/DAE/GLB/GLTF and texture import plus isolated preview.
 - Selected-model Humanoid configuration, bone/skinning audit and backed-up local visual-patch tool.
