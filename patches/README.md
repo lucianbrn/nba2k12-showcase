@@ -17,7 +17,7 @@ Run `tools/Install-ShowcasePatch.ps1` from the repository root. It copies the ov
 - **6 — Preview Selected Imported Model in Separate Scene:** inspect scale/materials separately.
 - **7 — Audit Selected Player Rig:** verify Avatar/bones and weighted skin mesh.
 - **8 — Replace In-Game Player Visual with Selected Model (LOCAL):** validates a skinned Humanoid model, backs up the original visual prefab outside the project, then replaces the shared synthetic visual in the local submodule.
-- **9 — Apply Broadcast HUD and 2011-12 Demo Roster:** adds the live scoreboard, 12-minute quarter clock, 24-second shot clock, shot-clock turnover, pause/resume, period-end flow, and historical demonstration names/numbers.
+- **9 — Apply Broadcast HUD and 2011-12 Demo Roster:** adds the live score/possession scoreboard, 12-minute quarter clock, 24-second shot clock, shot-clock turnover, pause/resume, period/overtime/final flow, player points/FGM/3PM, scorer callouts, period-by-period score summaries, and demo names/numbers.
 - **10 — Download CC0 Basketball Props Library:** downloads CC0 1.0 models from the current asset manifest.
 - **11 — Download CC0 Indoor Sports Hall:** downloads a CC0 community-gym starter scene.
 - **12 — Install CC0 Basketball Mesh on Live Ball:** replaces ball rendering only; keeps physics/authority.
