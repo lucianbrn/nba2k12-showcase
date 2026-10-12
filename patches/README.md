@@ -28,4 +28,4 @@ Run items 9, 0, 1, 10, 12, and 14 for the first local setup. The CC0 props and s
 
 For private model integration, use items 4, 5, 6, 7, and 8 in that order. Separate visual models can be assigned on `ShowcasePlayerVisualVariant` by Player Index 0–9. Every variant must be a valid Humanoid Avatar with the required bones and weighted SkinnedMeshRenderer. Preview success does not prove live animation compatibility.
 
-See [docs/NBA2K12_ASSET_PIPELINE.md](../docs/NBA2K12_ASSET_PIPELINE.md) and [docs/HIGH_FIDELITY_ACCEPTANCE_GATE.md](../docs/HIGH_FIDELITY_ACCEPTANCE_GATE.md).
+See [docs/CC0_ASSET_LIBRARY.md](../docs/CC0_ASSET_LIBRARY.md) for the actual public asset sources and license-validation workflow, [docs/NBA2K12_ASSET_PIPELINE.md](../docs/NBA2K12_ASSET_PIPELINE.md) for the PS3/PC asset boundary, and [docs/HIGH_FIDELITY_ACCEPTANCE_GATE.md](../docs/HIGH_FIDELITY_ACCEPTANCE_GATE.md) for the completion bar.
