@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 namespace NBA2K12Showcase.Editor
 {
-    /// <summary>Creates the broadcast HUD and a documented 2011-12 demonstration roster.</summary>
+    /// <summary>Creates the broadcast HUD and the requested 2013 Heat vs 2008 Celtics default roster.</summary>
     public static class ShowcaseGameSetupTools
     {
         private const string DemoScene = "Assets/Scenes/BasketballDemo.unity";
@@ -28,20 +28,20 @@ namespace NBA2K12Showcase.Editor
 
         private static readonly RosterEntry[] DemoRoster =
         {
-            new() { PlayerIndex = 0, TeamId = 0, Number = 2, Name = "Derek Fisher", Position = "PG", Team = "Los Angeles Lakers" },
-            new() { PlayerIndex = 1, TeamId = 0, Number = 24, Name = "Kobe Bryant", Position = "SG", Team = "Los Angeles Lakers" },
-            new() { PlayerIndex = 2, TeamId = 0, Number = 15, Name = "Metta World Peace", Position = "SF", Team = "Los Angeles Lakers" },
-            new() { PlayerIndex = 3, TeamId = 0, Number = 16, Name = "Pau Gasol", Position = "PF", Team = "Los Angeles Lakers" },
-            new() { PlayerIndex = 4, TeamId = 0, Number = 17, Name = "Andrew Bynum", Position = "C", Team = "Los Angeles Lakers" },
+            new() { PlayerIndex = 0, TeamId = 0, Number = 15, Name = "Mario Chalmers", Position = "PG", Team = "Miami Heat" },
+            new() { PlayerIndex = 1, TeamId = 0, Number = 3, Name = "Dwyane Wade", Position = "SG", Team = "Miami Heat" },
+            new() { PlayerIndex = 2, TeamId = 0, Number = 6, Name = "LeBron James", Position = "SF", Team = "Miami Heat" },
+            new() { PlayerIndex = 3, TeamId = 0, Number = 1, Name = "Chris Bosh", Position = "PF", Team = "Miami Heat" },
+            new() { PlayerIndex = 4, TeamId = 0, Number = 34, Name = "Ray Allen", Position = "SG", Team = "Miami Heat" },
 
             new() { PlayerIndex = 5, TeamId = 1, Number = 9, Name = "Rajon Rondo", Position = "PG", Team = "Boston Celtics" },
             new() { PlayerIndex = 6, TeamId = 1, Number = 20, Name = "Ray Allen", Position = "SG", Team = "Boston Celtics" },
             new() { PlayerIndex = 7, TeamId = 1, Number = 34, Name = "Paul Pierce", Position = "SF", Team = "Boston Celtics" },
             new() { PlayerIndex = 8, TeamId = 1, Number = 5, Name = "Kevin Garnett", Position = "PF", Team = "Boston Celtics" },
-            new() { PlayerIndex = 9, TeamId = 1, Number = 7, Name = "Jermaine O'Neal", Position = "C", Team = "Boston Celtics" },
+            new() { PlayerIndex = 9, TeamId = 1, Number = 43, Name = "Kendrick Perkins", Position = "C", Team = "Boston Celtics" },
         };
 
-        [MenuItem("Tools/NBA2K12 Showcase/9 - Apply Broadcast HUD and 2011-12 Demo Roster")]
+        [MenuItem("Tools/NBA2K12 Showcase/9 - Apply Broadcast HUD and 2013 Heat vs 2008 Celtics Roster")]
         public static void ApplyBroadcastAndRoster()
         {
             Scene scene = SceneManager.GetActiveScene();
@@ -73,12 +73,12 @@ namespace NBA2K12Showcase.Editor
 
             EnsureFolder(AssetRoot);
             EnsureFolder(TeamRoot);
-            BasketballTeamAppearanceProfile lakers = GetOrCreateProfile(
-                TeamRoot + "/Showcase_Lakers.asset", 0, "Los Angeles Lakers",
-                Hex("552583"), Hex("34204F"), Hex("FDB927"));
+            BasketballTeamAppearanceProfile heat = GetOrCreateProfile(
+                TeamRoot + "/Showcase_MIAMI_HEAT.asset", 0, "Miami Heat",
+                Hex("98002E"), Hex("121212"), Hex("FFFFFF"));
             BasketballTeamAppearanceProfile celtics = GetOrCreateProfile(
-                TeamRoot + "/Showcase_Celtics.asset", 1, "Boston Celtics",
-                Hex("F5F3EA"), Hex("E4E1D6"), Hex("007A33"));
+                TeamRoot + "/Showcase_BOSTON_CELTICS.asset", 1, "Boston Celtics",
+                Hex("007A33"), Hex("F5F5F0"), Hex("FFFFFF"));
 
             int updated = 0;
             foreach (RosterEntry entry in DemoRoster)
@@ -109,7 +109,7 @@ namespace NBA2K12Showcase.Editor
                     if (profiles != null && profiles.isArray)
                     {
                         profiles.arraySize = 2;
-                        profiles.GetArrayElementAtIndex(0).objectReferenceValue = lakers;
+                        profiles.GetArrayElementAtIndex(0).objectReferenceValue = heat;
                         profiles.GetArrayElementAtIndex(1).objectReferenceValue = celtics;
                         visual.ApplyModifiedProperties();
                         appearance.Apply();
@@ -140,11 +140,11 @@ namespace NBA2K12Showcase.Editor
             AssetDatabase.SaveAssets();
             EditorSceneManager.SaveScene(scene);
 
-            string report = "Applied 2011-12 demonstration identities to " + updated +
+            string report = "Applied requested 2013 Heat / 2008 Celtics identities to " + updated +
                 " players and attached the live broadcast HUD.\n\n" +
                 "The scoreboard reads the live score tracker; shot-clock violations use the possession manager. " +
                 "Clock rules are an implementation layer and should be play-tested before release.\n\n" +
-                "Note: this is a demonstration roster drawn from 2011-12 player names/numbers, not a verified extraction of NBA 2K12's exact save roster. " +
+                "Note: this is a roster identity/configuration preset, not authentic NBA 2K player geometry or an extracted save roster. " +
                 "It changes the local NeuralCourt submodule/scene only.";
             Debug.Log("[NBA2K12 Showcase] " + report);
             EditorUtility.DisplayDialog("NBA2K12 Showcase Setup", report, "OK");
