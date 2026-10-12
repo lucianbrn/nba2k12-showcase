@@ -28,6 +28,11 @@ namespace NBA2K12Showcase
         [SerializeField, Min(1)] private int regulationPeriods = 4;
 
         private BasketballTeamMember[] players = Array.Empty<BasketballTeamMember>();
+        private readonly int[] playerPoints = new int[10];
+        private readonly int[] playerFieldGoalsMade = new int[10];
+        private readonly int[] playerThreePointersMade = new int[10];
+        private readonly int[] teamFieldGoalsMade = new int[2];
+        private readonly int[] teamThreePointersMade = new int[2];
         private float gameClock;
         private float shotClock;
         private int period = 1;
@@ -294,6 +299,18 @@ namespace NBA2K12Showcase
 
             BasketballTeamMember scorer = players.FirstOrDefault(p =>
                 p != null && p.TeamId == score.TeamId && p.PlayerIndex == score.PlayerIndex);
+            if (score.PlayerIndex >= 0 && score.PlayerIndex < playerPoints.Length)
+            {
+                playerPoints[score.PlayerIndex] += score.Points;
+                playerFieldGoalsMade[score.PlayerIndex]++;
+                if (score.Points == 3) playerThreePointersMade[score.PlayerIndex]++;
+            }
+            if (score.TeamId >= 0 && score.TeamId < teamFieldGoalsMade.Length)
+            {
+                teamFieldGoalsMade[score.TeamId]++;
+                if (score.Points == 3) teamThreePointersMade[score.TeamId]++;
+            }
+
             ShowcasePlayerIdentity identity = scorer != null
                 ? scorer.GetComponent<ShowcasePlayerIdentity>()
                 : null;
@@ -395,6 +412,11 @@ namespace NBA2K12Showcase
         {
             if (scoreTracker != null)
                 scoreTracker.ResetScore();
+            Array.Clear(playerPoints, 0, playerPoints.Length);
+            Array.Clear(playerFieldGoalsMade, 0, playerFieldGoalsMade.Length);
+            Array.Clear(playerThreePointersMade, 0, playerThreePointersMade.Length);
+            Array.Clear(teamFieldGoalsMade, 0, teamFieldGoalsMade.Length);
+            Array.Clear(teamThreePointersMade, 0, teamThreePointersMade.Length);
 
             period = 1;
             overtime = false;
@@ -522,18 +544,26 @@ namespace NBA2K12Showcase
 
         private void DrawLiveInfo()
         {
-            const float y = 960f;
-            GUI.Box(new Rect(34, y, 610, 76), GUIContent.none, panelStyle);
+            const float y = 936f;
+            GUI.Box(new Rect(34, y, 610, 108), GUIContent.none, panelStyle);
             ShowcasePlayerIdentity identity = GetActiveIdentity();
+            BasketballTeamMember active = matchController != null ? matchController.ActivePlayer : null;
+            int index = active != null ? active.PlayerIndex : -1;
+            int points = index >= 0 && index < playerPoints.Length ? playerPoints[index] : 0;
+            int makes = index >= 0 && index < playerFieldGoalsMade.Length ? playerFieldGoalsMade[index] : 0;
+            int threes = index >= 0 && index < playerThreePointersMade.Length ? playerThreePointersMade[index] : 0;
             string playerName = identity != null ? identity.PlayerName : "PLAYER " +
                 (matchController != null ? matchController.ActivePlayerIndex + 1 : 1);
             string jersey = identity != null ? "#" + identity.JerseyNumber + "  " + identity.Position : "LIVE GAMEPLAY";
-            GUI.Label(new Rect(56, y + 10, 560, 30), playerName, teamStyle);
-            GUI.Label(new Rect(56, y + 42, 560, 23), jersey + "    •    1-5 SWITCH   WASD MOVE   SHIFT RUN   SPACE SHOOT", contextStyle);
+            GUI.Label(new Rect(56, y + 8, 560, 29), playerName, teamStyle);
+            GUI.Label(new Rect(56, y + 38, 560, 23),
+                jersey + "   •   " + points + " PTS   " + makes + " FGM   " + threes + " 3PM", contextStyle);
+            GUI.Label(new Rect(56, y + 68, 560, 23), "1–5 SWITCH   •   WASD MOVE   •   SHIFT RUN   •   SPACE SHOOT", contextStyle);
 
-            GUI.Box(new Rect(1400, y, 486, 76), GUIContent.none, panelStyle);
-            GUI.Label(new Rect(1420, y + 11, 440, 25), "NBA 2K SHOWCASE  /  LIVE", teamStyle);
-            GUI.Label(new Rect(1420, y + 42, 440, 23), "CTRL + MOUSE  PASS    •    ESC  PAUSE", contextStyle);
+            GUI.Box(new Rect(1400, y, 486, 108), GUIContent.none, panelStyle);
+            GUI.Label(new Rect(1420, y + 8, 440, 29), "NBA 2K SHOWCASE  /  LIVE", teamStyle);
+            GUI.Label(new Rect(1420, y + 38, 440, 23), "CTRL + CLICK  PASS   •   ESC  PAUSE", contextStyle);
+            GUI.Label(new Rect(1420, y + 68, 440, 23), "MOUSE LOOK   •   R RECENTER CAMERA", contextStyle);
         }
 
         private void DrawPauseCard()
