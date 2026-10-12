@@ -126,21 +126,12 @@ namespace NBA2K12Showcase.Editor
                 .Count(r => r != null && r.gameObject.scene == scene);
 
             int mappedVisualVariants = 0;
-            foreach (ShowcasePlayerVisualVariant variant in
-                     UnityEngine.Object.FindObjectsByType<ShowcasePlayerVisualVariant>(
-                         FindObjectsInactive.Include, FindObjectsSortMode.None)
-                         .Where(v => v != null && v.gameObject.scene == scene))
+            foreach (BasketballTeamMember player in players)
             {
-                SerializedObject serializedVariant = new SerializedObject(variant);
-                SerializedProperty slots = serializedVariant.FindProperty("playerSlots");
-                if (slots == null || !slots.isArray) continue;
-                for (int index = 0; index < slots.arraySize; index++)
-                {
-                    SerializedProperty model = slots.GetArrayElementAtIndex(index)
-                        .FindPropertyRelative("modelPrefab");
-                    if (model != null && model.objectReferenceValue != null)
-                        mappedVisualVariants++;
-                }
+                ShowcasePlayerVisualVariant variant =
+                    player.GetComponentInChildren<ShowcasePlayerVisualVariant>(true);
+                if (variant != null && variant.HasModelForPlayerIndex(player.PlayerIndex))
+                    mappedVisualVariants++;
             }
 
             int importedCC0Models = AssetDatabase.FindAssets(
