@@ -40,6 +40,7 @@ namespace NBA2K12Showcase
         private bool shotFlightSeen;
         private string playCall = "TIP-OFF";
         private float playCallUntil;
+        private float deadBallStopUntil;
         private GUIStyle panelStyle;
         private GUIStyle teamStyle;
         private GUIStyle scoreStyle;
@@ -143,8 +144,14 @@ namespace NBA2K12Showcase
             if (delta <= 0f)
                 return;
 
-            gameClock = Mathf.Max(0f, gameClock - delta);
-            UpdatePossessionAndShotClock(delta);
+            bool deadBall = possessionManager != null &&
+                            possessionManager.BallState == BasketballPossessionState.DeadBall;
+            bool inScoreRestartWindow = Time.unscaledTime < deadBallStopUntil;
+            if (!deadBall && !inScoreRestartWindow)
+            {
+                gameClock = Mathf.Max(0f, gameClock - delta);
+                UpdatePossessionAndShotClock(delta);
+            }
 
             if (gameClock <= 0f)
             {
@@ -279,6 +286,7 @@ namespace NBA2K12Showcase
 
         private void HandleScore(BasketballScoreEvent score)
         {
+            deadBallStopUntil = Time.unscaledTime + 1.25f;
             shotClock = shotClockLengthSeconds;
             shotFlightSeen = false;
             string team = score.TeamId == 0 ? "LAKERS" : "CELTICS";
