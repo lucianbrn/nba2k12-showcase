@@ -25,8 +25,10 @@ Those pages describe the PC IFF workflow. They do **not** establish that the too
 4. Export a player model with mesh, UVs, and skeleton/weights where available, and the matching face, body, jersey, and shorts texture maps. A face texture alone is not a 3D likeness; a jersey UV map only works with compatible geometry/UVs.
 5. If a tool exports an unskinned OBJ, treat it as a static preview until a valid skeleton and weights are added. If the source preserves weights, use a documented Blender-to-FBX/Humanoid retarget path and verify all bone mappings.
 6. In Unity, choose **Tools > NBA2K12 Showcase > 5 - Import Local Model and Texture Exports**. This imports supported FBX/OBJ/DAE and texture files into the local-only `Assets/NBA2K12Showcase/PrivateAssets` folder.
-7. Select the imported model asset and choose **Tools > NBA2K12 Showcase > 6 - Preview Selected Imported Model in Separate Scene**. Inspect topology, scale, UV/material assignment, and rig before integration.
-8. The imported model still must be wired to the existing player animation/retargeting path and tested on an on-court player. Previewing an FBX is not proof it animates in gameplay.
+7. Select the imported FBX asset. Use **Tools > NBA2K12 Showcase > 4 - Configure Selected Model as Humanoid**, then **7 - Audit Selected Player Rig**. The model needs a valid Avatar and the full set of bones the retargeter expects, including toes, feet, hands, spine/chest, neck and head.
+8. Use **Tools > NBA2K12 Showcase > 6 - Preview Selected Imported Model in Separate Scene** to inspect scale, UV/material assignment, renderer names and proportions.
+9. After the audit passes, use **Tools > NBA2K12 Showcase > 8 - Replace In-Game Player Visual with Selected Model (LOCAL)**. It backs up the source visual prefab under `%LOCALAPPDATA%\\NBA2K12Showcase\\Backups` before swapping the shared fallback model. This modifies the local NeuralCourt submodule; the private game files and modified upstream prefab are not committed to the public repository.
+10. To avoid ten copies of one athlete, assign separate imported model prefabs to `ShowcasePlayerVisualVariant` on the source visual prefab using Player Index 0–9 (P1–P10). Each slot must have its own valid Humanoid Avatar if you want distinct face/body meshes. After assigning variants, test the actual 5-on-5 scene and confirm all players animate correctly.
 
 ## Private-asset boundary
 
