@@ -568,12 +568,12 @@ namespace NBA2K12Showcase
             GUI.Label(new Rect(56, y + 8, 560, 29), playerName, teamStyle);
             GUI.Label(new Rect(56, y + 38, 560, 23),
                 jersey + "   •   " + points + " PTS   " + makes + " FGM   " + threes + " 3PM", contextStyle);
-            GUI.Label(new Rect(56, y + 68, 560, 23), "1–5 SWITCH   •   WASD MOVE   •   SHIFT RUN   •   SPACE SHOOT", contextStyle);
+            GUI.Label(new Rect(56, y + 68, 560, 23), Gamepad.current != null ? "D-PAD SWITCH   •   LEFT STICK MOVE   •   RT SPRINT   •   X / SQUARE SHOOT" : "1–5 SWITCH   •   WASD MOVE   •   SHIFT RUN   •   SPACE SHOOT", contextStyle);
 
             GUI.Box(new Rect(1400, y, 486, 108), GUIContent.none, panelStyle);
             GUI.Label(new Rect(1420, y + 8, 440, 29), "NBA 2K SHOWCASE  /  LIVE", teamStyle);
-            GUI.Label(new Rect(1420, y + 38, 440, 23), "CTRL + CLICK  PASS   •   ESC  PAUSE", contextStyle);
-            GUI.Label(new Rect(1420, y + 68, 440, 23), "MOUSE LOOK   •   R RECENTER CAMERA", contextStyle);
+            GUI.Label(new Rect(1420, y + 38, 440, 23), Gamepad.current != null ? "LT + A / CROSS PASS   •   START PAUSE" : "CTRL + CLICK  PASS   •   ESC  PAUSE", contextStyle);
+            GUI.Label(new Rect(1420, y + 68, 440, 23), Gamepad.current != null ? "LB / RB BALL SPIN   •   RIGHT STICK BALL CONTROL" : "MOUSE LOOK   •   R RECENTER CAMERA", contextStyle);
         }
 
         private void DrawPauseCard()
