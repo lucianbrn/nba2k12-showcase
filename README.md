@@ -73,7 +73,9 @@ The existing athlete is a synthetic, CC0/attributed-source model, not an NBA lik
 
 The PS3 reference asset provided earlier was only an RPCS3 shortcut. NBA 2K12 PC mod tools are documented for PC `.iff` containers; that is not proof they support the PS3 `.SDAT` files. See [docs/NBA2K12_ASSET_PIPELINE.md](docs/NBA2K12_ASSET_PIPELINE.md). A real player is not considered integrated until the mesh, UV textures, weighted skeleton, Humanoid Avatar, and on-court animation all work together in Play Mode.
 
-No ripped NBA 2K12 player models, face textures, jersey maps, official logos, commentary, or audio are bundled in this public repository. Local imports belong in `Assets/NBA2K12Showcase/PrivateAssets` and are excluded from Git. Do not publish commercial-game assets without redistribution rights.
+No ripped NBA 2K12 player models, face textures, jersey maps, official logos, commentary, or audio are bundled in this public repository.
+
+The [NBA2K Dataset](https://github.com/luyangzhu/NBA2K-dataset) is a research dataset, not a ready-made NBA roster pack. Its README says the releasable mesh data uses 28 synthetic players because the authors could not release current NBA-player data; access requires a dataset request, the raw pipeline needs over 100 GB of disk space, and the license is CC BY-NC-SA 4.0 (non-commercial, attribution, share-alike). It can be investigated for research-grade mesh/pose reconstruction, but it does not provide the authentic Heat/Celtics/Warriors likenesses requested here or drop-in Unity animation clips. Do not represent its synthetic players as real NBA stars. Local imports belong in `Assets/NBA2K12Showcase/PrivateAssets` and are excluded from Git. Do not publish commercial-game assets without redistribution rights.
 
 See [CC0 Asset Library](docs/CC0_ASSET_LIBRARY.md) for the asset-pack sources, license checks, local download locations and known limits. The basketball/indoor-hall assets are static props and setting references; they are not authentic NBA 2K12 assets or an NBA arena.
 
