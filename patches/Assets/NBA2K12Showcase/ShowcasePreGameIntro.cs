@@ -91,9 +91,20 @@ namespace NBA2K12Showcase
         private Texture2D primaryTexture;
         private Texture2D secondaryTexture;
         private bool stylesReady;
+        private bool firstFrame = true;
+
+        private void Start()
+        {
+            // Present a visible first-frame state; a bootstrap scene should start in team select.
+            state = FlowState.TeamSelect;
+            focusedTeam = 0;
+        }
 
         private void Update()
         {
+            if (teams == null || teams.Length == 0)
+                return;
+
             Keyboard keyboard = Keyboard.current;
             Gamepad pad = Gamepad.current;
 
@@ -133,7 +144,7 @@ namespace NBA2K12Showcase
                     break;
 
                 case FlowState.Intro:
-                    bool skip = keyboard != null &&
+                        bool skip = keyboard != null &&
                                 (keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame);
                     skip |= pad != null && pad.buttonSouth.wasPressedThisFrame;
                     if (skip || Time.unscaledTime - introStarted >= Mathf.Max(2f, introDurationSeconds))
