@@ -46,6 +46,7 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 - **15 — Assign P01-P10 Player Models by Filename:** validates and maps compatible imported models to player indices automatically.
 - **17 — Pre-Game Team Select / Roster / Intro:** runtime component `ShowcasePreGameIntro` supplies a Lakers/Celtics selector, starting five roster screen, team-themed intro card, and transition to `BasketballDemo`. It is intended for a dedicated bootstrap/menu scene, not the court scene itself. The current intro is a stylized UI sequence; it does not contain broadcast video, authentic player closeups, announcer audio, or tunnel animation.
 - **16 — One-Click Core Setup:** runs the existing roster/HUD, gameplay-camera, and TV-presentation setup, and attaches wired USB gamepad support. Xbox/PlayStation gamepads use the Unity Input System; the active input mode switches between gamepad and keyboard/mouse. This is a convenience wrapper; it does not download assets or create authentic NBA player models.
+- **17 — Matchup: 2013 Heat vs 2008 Celtics; 18 — 2013 Heat vs 2017 Warriors; 19 — 2008 Celtics vs 2017 Warriors:** applies the requested era rosters, jersey numbers, team color profiles and scoreboard names. The game currently supports two teams per match, so choose one matchup at a time. Quick Start defaults to 2013 Heat vs 2008 Celtics.
 
 ### First Unity run
 
@@ -53,23 +54,19 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 2. Run **0** and **1** for gameplay framing and URP presentation.
 3. Run **10**, wait for the downloads and Unity's GLB import, then run **12** to install the CC0 basketball mesh.
 4. Run **14** and review the generated readiness report.
-5. Run **16** to attach gamepad support, then enter Play Mode and test movement, passing, shooting, scoring, shot-clock violations, quarter transitions, and pause/resume.\n\n### Wired USB controller\n\nConnect an Xbox controller or supported PlayStation controller by USB before or during Play Mode. Move the left stick to activate gamepad input; keyboard/mouse remains available and switches back when used. Left stick moves, right stick aims ball control/pass direction, left-stick click sprints, Y/Triangle shoots, LB/RB or D-pad left/right switches teammates, Start pauses, and A/Cross confirms pause/period/final screens. Hold LT and press A/Cross to request a pass to the teammate indicated by the right stick. Support depends on Windows and the controller exposing a layout supported by Unity Input System; generic HID devices may need mapping.
+5. Run **16** to attach gamepad support, then enter Play Mode and test movement, passing, shooting, scoring, shot-clock violations, quarter transitions, and pause/resume.
 
 Menu items 10–13 download/use CC0 **static setting and prop geometry**. The sports centre is a community gym reference, not a pro NBA arena. It has no basketball logic, colliders, or animated players.
 
 For distinct player models, name the imported files `P01_Name.fbx` through `P10_Name.fbx`. Use items 4, 6, and 7 to configure/preview/audit a model, item 8 to install P01 as the shared fallback, then item 15 to assign available model files to player slots. The assignment tool rejects models without a valid Humanoid Avatar, required bones, and a weighted SkinnedMeshRenderer.
 
-### Wired USB controller
-
-Connect an Xbox controller or supported PlayStation controller by USB before or during Play Mode. Move the left stick to activate gamepad input; keyboard/mouse remains available and switches back when used. Left stick moves, right stick aims ball control/pass direction, left-stick click sprints, Y/Triangle shoots, LB/RB or D-pad left/right switches teammates, Start pauses, and A/Cross confirms pause/period/final screens. Hold LT and press A/Cross to request a pass to the teammate indicated by the right stick. Support depends on Windows and the controller exposing a layout supported by Unity Input System; generic HID devices may need mapping.
-
 ### Pre-game team-selection sequence
 
-To use the new pre-game component, create a dedicated bootstrap/menu scene (for example `Assets/Scenes/PreGame.unity`), add an empty GameObject named `Pre-Game Presentation`, and add `ShowcasePreGameIntro` from `Assets/NBA2K12Showcase/ShowcasePreGameIntro.cs`. Ensure `BasketballDemo` is present in Build Settings/Build Profiles, since the component loads that scene by name. Start the game from this menu scene. The flow is team selection → starting roster → team-colored intro card → court. Keyboard uses left/right and Enter/Space; supported gamepads use D-pad/left stick and A/Cross. This is a UI intro foundation, not the full cinematic presentation found in NBA 2K; actual intro footage, player models, arena fly-throughs and audio still need to be produced and legally sourced.
+An optional pre-game intro component exists, but it is not the active route for choosing the requested gameplay matchup. Use the editor matchup menus 17–19 on the court scene for now.
 
 ## Real players and uniforms
 
-The existing athlete is a synthetic, CC0/attributed-source model, not an NBA likeness. The demo roster provides names and jersey numbers for Lakers/Celtics-era presentation, but it does not extract the actual NBA 2K12 roster. Team palette colors are not real uniforms.
+The existing athlete is a synthetic base model, not an NBA likeness. The requested Heat/Celtics/Warriors matchups now configure names, numbers and team colors, but those colors are not real uniform textures and the player bodies are not authentic NBA likenesses.
 
 The PS3 reference asset provided earlier was only an RPCS3 shortcut. NBA 2K12 PC mod tools are documented for PC `.iff` containers; that is not proof they support the PS3 `.SDAT` files. See [docs/NBA2K12_ASSET_PIPELINE.md](docs/NBA2K12_ASSET_PIPELINE.md). A real player is not considered integrated until the mesh, UV textures, weighted skeleton, Humanoid Avatar, and on-court animation all work together in Play Mode.
 
