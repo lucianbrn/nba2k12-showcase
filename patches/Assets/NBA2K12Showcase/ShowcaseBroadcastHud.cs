@@ -156,36 +156,53 @@ namespace NBA2K12Showcase
             BasketballPossessionState state = possessionManager.BallState;
 
             if (state == BasketballPossessionState.ShotFlight)
+            {
                 shotFlightSeen = true;
-
-            if (owner == null)
+                // A release before zero is allowed to finish even if the clock hits zero in flight.
+                shotClock = Mathf.Max(0f, shotClock - delta);
                 return;
-
-            if (lastOwnerTeam < 0)
-            {
-                lastOwnerTeam = owner.TeamId;
-                shotClock = shotClockLengthSeconds;
-            }
-            else if (owner.TeamId != lastOwnerTeam)
-            {
-                lastOwnerTeam = owner.TeamId;
-                shotClock = shotClockLengthSeconds;
-                shotFlightSeen = false;
-            }
-            else if (shotFlightSeen)
-            {
-                // Same-team recovery after a shot is treated as an offensive rebound.
-                shotClock = offensiveReboundResetSeconds;
-                shotFlightSeen = false;
             }
 
-            // The clock runs only while a team clearly controls a live possession.
-            if (state != BasketballPossessionState.Possessed)
+            if (owner != null)
+            {
+                if (lastOwnerTeam < 0)
+                {
+                    lastOwnerTeam = owner.TeamId;
+                    shotClock = shotClockLengthSeconds;
+                }
+                else if (owner.TeamId != lastOwnerTeam)
+                {
+                    lastOwnerTeam = owner.TeamId;
+                    shotClock = shotClockLengthSeconds;
+                    shotFlightSeen = false;
+                }
+                else if (shotFlightSeen)
+                {
+                    // Same-team recovery after a shot is treated as an offensive rebound.
+                    shotClock = offensiveReboundResetSeconds;
+                    shotFlightSeen = false;
+                }
+            }
+
+            // The shot clock must continue through a live pass preparation/flight, even while
+            // the possession manager temporarily has no ball owner. The passer identifies offense.
+            BasketballTeamMember offense = owner;
+            bool liveControlledPossession = owner != null &&
+                (state == BasketballPossessionState.Possessed ||
+                 state == BasketballPossessionState.PassPreparing ||
+                 state == BasketballPossessionState.CatchBlend);
+            if (owner == null && state == BasketballPossessionState.PassFlight)
+            {
+                offense = possessionManager.Passer;
+                liveControlledPossession = offense != null;
+            }
+
+            if (!liveControlledPossession)
                 return;
 
             shotClock = Mathf.Max(0f, shotClock - delta);
-            if (shotClock <= 0f)
-                ApplyShotClockViolation(owner);
+            if (shotClock <= 0f && offense != null)
+                ApplyShotClockViolation(offense);
         }
 
         private void ApplyShotClockViolation(BasketballTeamMember offense)
