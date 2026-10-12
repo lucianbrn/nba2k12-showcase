@@ -182,6 +182,16 @@ namespace NBA2K12Showcase.Editor
 
                 // Remove original visual (including its number overlay meshes), then bind the new Humanoid.
                 UnityEngine.Object.DestroyImmediate(oldModelRoot.gameObject, true);
+
+                // The upstream visual stores its old jersey digits as separate direct child meshes.
+                // Remove them as well; otherwise the fallback digits can float around the new model.
+                for (int childIndex = prefabRoot.transform.childCount - 1; childIndex >= 0; childIndex--)
+                {
+                    Transform child = prefabRoot.transform.GetChild(childIndex);
+                    if (child.name.StartsWith("Jersey Number", StringComparison.OrdinalIgnoreCase))
+                        UnityEngine.Object.DestroyImmediate(child.gameObject, true);
+                }
+
                 BasketballJerseyNumberDisplay numberDisplay =
                     prefabRoot.GetComponent<BasketballJerseyNumberDisplay>();
                 if (numberDisplay != null) UnityEngine.Object.DestroyImmediate(numberDisplay, true);
