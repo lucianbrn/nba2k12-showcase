@@ -125,11 +125,34 @@ namespace NBA2K12Showcase.Editor
                     FindObjectsInactive.Include, FindObjectsSortMode.None)
                 .Count(r => r != null && r.gameObject.scene == scene);
 
+            int mappedVisualVariants = 0;
+            foreach (ShowcasePlayerVisualVariant variant in
+                     UnityEngine.Object.FindObjectsByType<ShowcasePlayerVisualVariant>(
+                         FindObjectsInactive.Include, FindObjectsSortMode.None)
+                         .Where(v => v != null && v.gameObject.scene == scene))
+            {
+                SerializedObject serializedVariant = new SerializedObject(variant);
+                SerializedProperty slots = serializedVariant.FindProperty("playerSlots");
+                if (slots == null || !slots.isArray) continue;
+                for (int index = 0; index < slots.arraySize; index++)
+                {
+                    SerializedProperty model = slots.GetArrayElementAtIndex(index)
+                        .FindPropertyRelative("modelPrefab");
+                    if (model != null && model.objectReferenceValue != null)
+                        mappedVisualVariants++;
+                }
+            }
+
+            int importedCC0Models = AssetDatabase.FindAssets(
+                "t:Model", new[] { "Assets/NBA2K12Showcase/ExternalCC0" }).Length;
+
             var blockers = new System.Collections.Generic.List<string>();
             if (players.Length != 10 || homeCount != 5 || awayCount != 5)
                 blockers.Add("FAIL: Expected 10 players (5 per team); found " + players.Length + " total, " + homeCount + " home, " + awayCount + " away.");
             if (identities != 10)
                 blockers.Add("WARN: Only " + identities + "/10 players have ShowcasePlayerIdentity metadata.");
+            if (mappedVisualVariants < 10)
+                blockers.Add("BLOCKER: Only " + mappedVisualVariants + "/10 player model variants are assigned. All ten require proper models to meet the differentiated-athlete target.");
             if (retargeters < 10)
                 blockers.Add("FAIL: Found " + retargeters + " visual retargeters for 10 players.");
             if (validHumanoids < 10)
@@ -172,6 +195,8 @@ namespace NBA2K12Showcase.Editor
             report.AppendLine("Weighted skinned meshes under players: " + weightedSkinnedMeshes);
             report.AppendLine("Player renderers: " + renderers + "; missing material slots: " + missingMaterials + "; textureless materials: " + missingTextures);
             report.AppendLine("Global skinned meshes in scene: " + skinnedCount);
+            report.AppendLine("Assigned per-player model variants: " + mappedVisualVariants + "/10");
+            report.AppendLine("Imported CC0 GLB models detected: " + importedCC0Models);
             report.AppendLine("Ball controller: " + (ball != null ? ball.name : "MISSING"));
             report.AppendLine("Court + two hoops: " + (court != null && court.PositiveZHoop != null && court.NegativeZHoop != null));
             report.AppendLine("Match + score tracker: " + (match != null && scores != null));
