@@ -44,6 +44,7 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 - **13 — Create Separate CC0 Sports Hall Preview:** creates a separate additive preview scene, not the main basketball arena.
 - **14 — Run Full Game Readiness Audit:** writes a local report with player counts, valid Humanoid Avatar counts, weighted meshes, ball/court references, camera, and blockers.
 - **15 — Assign P01-P10 Player Models by Filename:** validates and maps compatible imported models to player indices automatically.
+- **16 — One-Click Core Setup:** runs the existing roster/HUD, gameplay-camera, and TV-presentation setup in sequence. This is a convenience wrapper; it does not download assets or create authentic NBA player models.
 
 ### First Unity run
 
