@@ -144,7 +144,13 @@ namespace NBA2K12Showcase
             UpdatePossessionAndShotClock(delta);
 
             if (gameClock <= 0f)
-                EndPeriod();
+            {
+                // A shot released before zero is allowed to finish its flight (buzzer-beater rule).
+                // Once the ball leaves ShotFlight, the period ends; no rebound follow-up is allowed.
+                if (possessionManager == null ||
+                    possessionManager.BallState != BasketballPossessionState.ShotFlight)
+                    EndPeriod();
+            }
         }
 
         private void UpdatePossessionAndShotClock(float delta)
