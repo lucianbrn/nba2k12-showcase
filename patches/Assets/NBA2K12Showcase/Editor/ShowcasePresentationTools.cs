@@ -22,6 +22,138 @@ namespace NBA2K12Showcase.Editor
         private const string GradePath = Settings + "/Showcase_TV_Grade.asset";
         private const string VolumeName = "NBA2K12 Showcase - TV Color Grade";
 
+        [MenuItem("Tools/NBA2K12 Showcase/0 - Apply NBA 2K Gameplay Camera Framing")]
+        public static void ApplyGameplayCameraFraming()
+        {
+            Scene scene = SceneManager.GetActiveScene();
+            ThirdPersonOrbitCamera orbit = null;
+            foreach (ThirdPersonOrbitCamera candidate in
+                     UnityEngine.Object.FindObjectsByType<ThirdPersonOrbitCamera>(
+                         FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (candidate != null && candidate.gameObject.scene == scene)
+                {
+                    orbit = candidate;
+                    break;
+                }
+            }
+
+            if (orbit == null)
+            {
+                EditorUtility.DisplayDialog(
+                    "NBA2K12 Showcase",
+                    "No ThirdPersonOrbitCamera was found in the active scene. Open BasketballDemo.unity first.",
+                    "OK");
+                return;
+            }
+
+            Transform target = orbit.Target;
+            if (target == null)
+            {
+                BasketballTeamMember member = null;
+                foreach (BasketballTeamMember candidate in
+                         UnityEngine.Object.FindObjectsByType<BasketballTeamMember>(
+                             FindObjectsInactive.Include, FindObjectsSortMode.None))
+                {
+                    if (candidate != null && candidate.gameObject.scene == scene)
+                    {
+                        member = candidate;
+                        break;
+                    }
+                }
+                target = member != null ? member.transform : null;
+            }
+
+            if (target == null)
+            {
+                EditorUtility.DisplayDialog(
+                    "NBA2K12 Showcase",
+                    "The camera has no player target and no BasketballTeamMember exists in the active scene.",
+                    "OK");
+                return;
+            }
+
+            const string settingsAssetPath =
+                "Assets/AI4AnimationRemake/Resources/Settings/BasketballRuntimeSettings.asset";
+            BasketballRuntimeSettings settings =
+                Resources.Load<BasketballRuntimeSettings>("Settings/BasketballRuntimeSettings");
+            if (settings == null)
+            {
+                settings = AssetDatabase.LoadAssetAtPath<BasketballRuntimeSettings>(settingsAssetPath);
+            }
+
+            if (settings == null)
+            {
+                EditorUtility.DisplayDialog(
+                    "NBA2K12 Showcase",
+                    "Could not find the existing BasketballRuntimeSettings asset. No camera changes were saved.",
+                    "OK");
+                return;
+            }
+
+            // Give the game camera enough distance and elevation to show spacing,
+            // defensive rotations, and the ball-handler's context rather than a close avatar view.
+            SerializedObject settingsObject = new SerializedObject(settings);
+            SetFloat(settingsObject, "cameraDistance", 13f);
+            SetFloat(settingsObject, "minimumCameraDistance", 6f);
+            SetFloat(settingsObject, "maximumCameraDistance", 20f);
+            SetFloat(settingsObject, "minimumPitch", 7f);
+            SetFloat(settingsObject, "maximumPitch", 43f);
+            SetFloat(settingsObject, "recenterPitch", 23f);
+            SetFloat(settingsObject, "cameraTargetSmoothTime", 0.055f);
+            SetFloat(settingsObject, "rotationSmoothTime", 0.07f);
+            settingsObject.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(settings);
+
+            Camera camera = orbit.GetComponent<Camera>();
+            if (camera == null)
+            {
+                EditorUtility.DisplayDialog("NBA2K12 Showcase", "The orbit camera has no Camera component.", "OK");
+                return;
+            }
+
+            Vector3 courtForward = Vector3.ProjectOnPlane(target.forward, Vector3.up);
+            if (courtForward.sqrMagnitude < 0.001f) courtForward = Vector3.forward;
+            courtForward.Normalize();
+
+            Vector3 pivot = target.position + new Vector3(0f, 1.35f, 0f);
+            Vector3 desiredCameraPosition =
+                target.position - courtForward * 12f + Vector3.up * 6.5f;
+
+            Undo.RecordObject(camera.transform, "Apply NBA 2K Gameplay Camera Framing");
+            Undo.RecordObject(camera, "Apply NBA 2K Gameplay Camera Framing");
+            camera.transform.SetPositionAndRotation(
+                desiredCameraPosition,
+                Quaternion.LookRotation(pivot - desiredCameraPosition, Vector3.up));
+            camera.fieldOfView = 48f;
+            camera.nearClipPlane = 0.08f;
+            camera.farClipPlane = Mathf.Max(camera.farClipPlane, 180f);
+
+            // Reinitialize the existing camera controller from the new authored pose.
+            // This preserves the game's orbit/cursor input path and only changes presentation.
+            Undo.RecordObject(orbit, "Apply NBA 2K Gameplay Camera Framing");
+            orbit.Configure(target, settings);
+            EditorUtility.SetDirty(camera);
+            EditorUtility.SetDirty(orbit);
+            EditorSceneManager.MarkSceneDirty(scene);
+            AssetDatabase.SaveAssets();
+
+            const string report =
+                "Applied a wider, elevated 2K-style gameplay camera starting pose.\\n\\n" +
+                "The existing player-follow and orbit controls remain enabled. The new framing is intended " +
+                "to show more of the possession and nearby defenders; it is not a broadcast-cinematic preset.\\n\\n" +
+                "Enter Play Mode and check both half-court visibility and input. If the frame clips at the far end, " +
+                "increase the distance modestly rather than adding arbitrary geometry.";
+            Debug.Log("[NBA2K12 Showcase] " + report);
+            EditorUtility.DisplayDialog("NBA2K12 Showcase", report, "OK");
+        }
+
+        private static void SetFloat(SerializedObject serializedObject, string propertyName, float value)
+        {
+            SerializedProperty property = serializedObject.FindProperty(propertyName);
+            if (property != null) property.floatValue = value;
+        }
+
         [MenuItem("Tools/NBA2K12 Showcase/1 - Apply TV Presentation Polish")]
         public static void ApplyTvPresentation()
         {
