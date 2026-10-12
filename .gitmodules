@@ -1,0 +1,3 @@
+[submodule "NeuralCourt"]
+	path = NeuralCourt
+	url = https://github.com/henry753951/neuralcourt-basketball.git
