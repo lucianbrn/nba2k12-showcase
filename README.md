@@ -60,6 +60,8 @@ The PS3 reference asset provided earlier was only an RPCS3 shortcut. NBA 2K12 PC
 
 No ripped NBA 2K12 player models, face textures, jersey maps, official logos, commentary, or audio are bundled in this public repository. Local imports belong in `Assets/NBA2K12Showcase/PrivateAssets` and are excluded from Git. Do not publish commercial-game assets without redistribution rights.
 
+See [CC0 Asset Library](docs/CC0_ASSET_LIBRARY.md) for the asset-pack sources, license checks, local download locations and known limits. The basketball/indoor-hall assets are static props and setting references; they are not authentic NBA 2K12 assets or an NBA arena.
+
 ## Verification
 
 Run **Tools > NBA2K12 Showcase > 14 - Run Full Game Readiness Audit** after setup. It reports structure and known blockers only; it cannot judge visual quality. Every player, uniform, animation, camera shot, and arena setting still needs inspection in Unity Play Mode. Until the non-negotiable acceptance gate is passed, the project remains **in development**.
