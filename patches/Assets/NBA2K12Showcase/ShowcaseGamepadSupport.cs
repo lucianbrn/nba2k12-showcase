@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Reflection;
 using CrowdEyes.AI4Animation.Basketball;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -75,6 +76,9 @@ namespace NBA2K12Showcase
 
             if (pad.leftTrigger.ReadValue() > 0.55f && pad.buttonSouth.wasPressedThisFrame)
                 TryPass(pad.rightStick.ReadValue());
+
+            if (pad.startButton.wasPressedThisFrame)
+                TogglePause();
         }
 
         private void RefreshPlayers()
@@ -149,8 +153,46 @@ namespace NBA2K12Showcase
                 .Select(item => item.Player)
                 .FirstOrDefault();
 
-            if (target != null && match.PossessionManager.RequestPass(active, target))
-                Debug.Log("[NBA2K12 Showcase] Gamepad pass requested to player " + target.PlayerIndex, this);
+            if (target == null || !match.PossessionManager.RequestPass(active, target))
+                return;
+
+            // Reuse the match controller's existing pass lifecycle so its neural pass
+            // preparation, release window and timeout handling stay authoritative.
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            SetPrivateField("passTarget", target, flags);
+            SetPrivateField("passCommitted", true, flags);
+            SetPrivateField("passCommittedSeconds", 0f, flags);
+            SetPrivateField("shotAttempt", false, flags);
+            SetPrivateField("shotCommitted", false, flags);
+            SetPrivateField("IsTargetSelectionActive", false, flags);
+            SetPrivateField("lockedTarget", null, flags);
+            Debug.Log("[NBA2K12 Showcase] Gamepad pass committed to player " + target.PlayerIndex, this);
+        }
+
+        private void TogglePause()
+        {
+            ShowcaseBroadcastHud hud = FindFirstObjectByType<ShowcaseBroadcastHud>();
+            if (hud == null)
+                return;
+            FieldInfo pausedField = typeof(ShowcaseBroadcastHud).GetField(
+                "paused", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo setPaused = typeof(ShowcaseBroadcastHud).GetMethod(
+                "SetPaused", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (pausedField == null || setPaused == null)
+                return;
+            bool paused = (bool)pausedField.GetValue(hud);
+            setPaused.Invoke(hud, new object[] { !paused });
+        }
+
+        private void SetPrivateField(string fieldName, object value, BindingFlags flags)
+        {
+            FieldInfo field = typeof(BasketballMatchController).GetField(fieldName, flags);
+            if (field == null)
+            {
+                Debug.LogWarning("[NBA2K12 Showcase] Controller pass integration could not find field " + fieldName, this);
+                return;
+            }
+            field.SetValue(match, value);
         }
     }
 }
