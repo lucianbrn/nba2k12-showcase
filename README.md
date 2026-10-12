@@ -30,14 +30,14 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 
 - **0 — Apply NBA 2K Gameplay Camera Framing:** wider/elevated player-follow camera.
 - **1 — Apply TV Presentation Polish:** URP post-processing, HDR/MSAA request, shadows, and ambient grade.
-- **2 — Apply Lakers vs Celtics Palette:** a color-only test; not an authentic uniform.
+- **2 — Apply Heat vs Celtics Palette:** a color-only preset for the 2013 Heat and 2008 Celtics; not authentic uniform textures.
 - **3 — Audit Active Scene:** basic scene counts.
 - **4 — Configure Selected Model as Humanoid:** prepare a selected private FBX for Avatar setup.
 - **5 — Import Local Model and Texture Exports:** import local FBX/OBJ/DAE/GLB/GLTF and textures into a Git-ignored folder.
 - **6 — Preview Selected Imported Model in Separate Scene:** isolate a model for visual checks.
 - **7 — Audit Selected Player Rig:** checks the Humanoid Avatar, required bones, and skinned mesh.
 - **8 — Replace In-Game Player Visual with Selected Model (LOCAL):** validates the selected model, backs up the upstream visual prefab to `%LOCALAPPDATA%\NBA2K12Showcase\Backups`, and modifies the local NeuralCourt submodule. Do not rerun the upstream scene builder afterward unless you intend to regenerate the synthetic demo.
-- **9 — Apply Broadcast HUD and 2011-12 Demo Roster:** adds the live score/possession scoreboard, 12-minute quarter clock, 24-second shot clock, shot-clock violations, quarter/overtime/end-game flow, pause/restart, player points/FGM/3PM, scorer callouts, period-by-period scoring, and demo names/numbers.
+- **9 — Apply Broadcast HUD and 2013 Heat vs 2008 Celtics Roster:** adds the live score/possession scoreboard, 12-minute quarter clock, 24-second shot clock, shot-clock violations, quarter/overtime/end-game flow, pause/restart, player points/FGM/3PM, scorer callouts, period-by-period scoring, and demo names/numbers.
 - **10 — Download CC0 Basketball Props Library:** downloads the asset provider's currently listed CC0 1.0 basketball court/hoop/ball/furniture GLBs plus the manifest and license record.
 - **11 — Download CC0 Indoor Sports Hall:** downloads a CC0 community sports-centre starter scene.
 - **12 — Install CC0 Basketball Mesh on Live Ball:** replaces the ball's renderer with the downloaded 240 mm GLB mesh while retaining the original physics root.
@@ -66,7 +66,7 @@ For distinct player models, name the imported files `P01_Name.fbx` through `P10_
 
 ### Pre-game team-selection sequence
 
-An optional pre-game intro component exists, but it is not the active route for choosing the requested gameplay matchup. Use the editor matchup menus 17–19 on the court scene for now.
+The optional pre-game intro component is not part of the default startup flow. Use matchup menus 17–19 on the court scene to choose among the three requested teams.
 
 ## Real players and uniforms
 
