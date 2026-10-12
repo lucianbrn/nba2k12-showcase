@@ -1,0 +1,30 @@
+name: Unity patch C# syntax
+
+on:
+  push:
+    paths:
+      - "patches/Assets/NBA2K12Showcase/**/*.cs"
+      - "tools/CSharpSyntaxCheck/**"
+      - ".github/workflows/csharp-syntax.yml"
+  pull_request:
+    paths:
+      - "patches/Assets/NBA2K12Showcase/**/*.cs"
+      - "tools/CSharpSyntaxCheck/**"
+      - ".github/workflows/csharp-syntax.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  syntax-check:
+    name: Parse added C# scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Parse C# sources
+        run: dotnet run --project tools/CSharpSyntaxCheck/CSharpSyntaxCheck.csproj -- .
