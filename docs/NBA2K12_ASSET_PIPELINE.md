@@ -17,6 +17,10 @@ NBA 2K12 modding tools exist for the **PC release**:
 
 Those pages describe the PC IFF workflow. They do **not** establish that the tools can unpack PS3 SDAT containers, or that PS3 payloads can be dragged straight into Unity. Do not run a PC IFF tool against an opaque SDAT output and assume extraction succeeded.
 
+This particular game ID, `BLUS-30944`, is listed as the PS3 NBA 2K12: Game of the Year Edition ([SerialStation title record](https://serialstation.com/titles/BLUS/30944)). The [NLSC RED Modding Center listing](https://www.nba-live.com/forums/downloads.php?df_id=8756&mobile=on&view=detail) describes IFF import/export for NBA 2K12–2K14 **PC** assets. A [historical PS3/360 modding discussion](https://forums.operationsports.com/forums/forum/basketball/nba-2k-basketball/nba-2k-last-gen/nba-2k-last-gen-rosters/494647-is-it-possible-to-mod-2k12-on-ps3-or-360) reports that the PC visual-mod workflow does not transfer directly to console disc content. This is evidence of a platform boundary, not proof that offline extraction is impossible; however, I have not found a verified PS3 mesh-export workflow for this project.
+
+**Practical consequence:** a real NBA 2K-style player cannot be produced from the PS3 shortcut, a roster file, or a jersey texture alone. We need a verified model export with mesh/UV/skeleton plus matching face/body/uniform textures. If the PS3 container stage cannot produce that, a legal PC NBA 2K12 IFF export workflow (if you have access to one) or a separately licensed realistic player asset is the viable source for the Unity import path.
+
 ## Required format handoff
 
 1. Keep the original disc/ISO and all source archives untouched.
