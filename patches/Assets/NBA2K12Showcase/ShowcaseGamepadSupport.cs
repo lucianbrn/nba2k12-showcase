@@ -69,9 +69,9 @@ namespace NBA2K12Showcase
             if (!gamepadMode || pad == null)
                 return;
 
-            if (pad.leftShoulder.wasPressedThisFrame || pad.dpad.left.wasPressedThisFrame)
+            if (pad.dpad.left.wasPressedThisFrame)
                 SelectNext(-1);
-            else if (pad.rightShoulder.wasPressedThisFrame || pad.dpad.right.wasPressedThisFrame)
+            else if (pad.dpad.right.wasPressedThisFrame)
                 SelectNext(1);
 
             if (pad.leftTrigger.ReadValue() > 0.55f && pad.buttonSouth.wasPressedThisFrame)
