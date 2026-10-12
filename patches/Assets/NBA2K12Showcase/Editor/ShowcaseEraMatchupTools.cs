@@ -165,7 +165,7 @@ namespace NBA2K12Showcase.Editor
         private static BasketballTeamAppearanceProfile Profile(Team team, int id)
         {
             string safe = team.Name.Replace(" ", "_");
-            string path = TeamRoot + "/Era_" + safe + ".asset";
+            string path = TeamRoot + "/Showcase_" + safe + ".asset";
             BasketballTeamAppearanceProfile profile = AssetDatabase.LoadAssetAtPath<BasketballTeamAppearanceProfile>(path);
             if (profile == null)
             {
@@ -178,7 +178,7 @@ namespace NBA2K12Showcase.Editor
             return profile;
         }
 
-        private static string PathName(string name) => "Era_" + name;
+        private static string PathName(string name) => "Showcase_" + name;
 
         private static Color Hex(string value)
         {
