@@ -37,7 +37,7 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 - **6 — Preview Selected Imported Model in Separate Scene:** isolate a model for visual checks.
 - **7 — Audit Selected Player Rig:** checks the Humanoid Avatar, required bones, and skinned mesh.
 - **8 — Replace In-Game Player Visual with Selected Model (LOCAL):** validates the selected model, backs up the upstream visual prefab to `%LOCALAPPDATA%\NBA2K12Showcase\Backups`, and modifies the local NeuralCourt submodule. Do not rerun the upstream scene builder afterward unless you intend to regenerate the synthetic demo.
-- **9 — Apply Broadcast HUD and 2011-12 Demo Roster:** adds the live scoreboard, 12-minute quarter clock, 24-second shot clock, pause/end-of-period flow, and demo player names/numbers.
+- **9 — Apply Broadcast HUD and 2011-12 Demo Roster:** adds the live score/possession scoreboard, 12-minute quarter clock, 24-second shot clock, shot-clock violations, quarter/overtime/end-game flow, pause/restart, player points/FGM/3PM, scorer callouts, period-by-period scoring, and demo names/numbers.
 - **10 — Download CC0 Basketball Props Library:** downloads the asset provider's currently listed CC0 1.0 basketball court/hoop/ball/furniture GLBs plus the manifest and license record.
 - **11 — Download CC0 Indoor Sports Hall:** downloads a CC0 community sports-centre starter scene.
 - **12 — Install CC0 Basketball Mesh on Live Ball:** replaces the ball's renderer with the downloaded 240 mm GLB mesh while retaining the original physics root.
