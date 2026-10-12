@@ -291,8 +291,17 @@ namespace NBA2K12Showcase
             deadBallStopUntil = Time.unscaledTime + 1.25f;
             shotClock = shotClockLengthSeconds;
             shotFlightSeen = false;
-            string team = score.TeamId == 0 ? "LAKERS" : "CELTICS";
-            ShowPlayCall(team + " +" + score.Points);
+
+            BasketballTeamMember scorer = players.FirstOrDefault(p =>
+                p != null && p.TeamId == score.TeamId && p.PlayerIndex == score.PlayerIndex);
+            ShowcasePlayerIdentity identity = scorer != null
+                ? scorer.GetComponent<ShowcasePlayerIdentity>()
+                : null;
+            string scorerName = identity != null
+                ? identity.PlayerName.ToUpperInvariant()
+                : "PLAYER " + (score.PlayerIndex + 1);
+            string finish = score.Points == 3 ? "THREE" : "BUCKET";
+            ShowPlayCall(scorerName + "  /  " + finish + "  +" + score.Points);
         }
 
         private void EndPeriod()
