@@ -18,11 +18,13 @@ namespace NBA2K12Showcase
         private BasketballMatchController match;
         private BasketballTeamMember[] players = System.Array.Empty<BasketballTeamMember>();
         private bool gamepadMode;
+        private float nextPlayerRefreshTime;
 
         private void Awake()
         {
             match = FindFirstObjectByType<BasketballMatchController>();
             RefreshPlayers();
+            nextPlayerRefreshTime = Time.unscaledTime + 1f;
             SetGamepadMode(Gamepad.current != null);
         }
 
@@ -33,7 +35,13 @@ namespace NBA2K12Showcase
             if (match == null)
                 return;
 
-            RefreshPlayers();
+            if (players.Length == 0 || Time.unscaledTime >= nextPlayerRefreshTime)
+            {
+                RefreshPlayers();
+                nextPlayerRefreshTime = Time.unscaledTime + 1f;
+                ApplyInputMode(gamepadMode);
+            }
+
             Gamepad pad = Gamepad.current;
             Keyboard keyboard = Keyboard.current;
 
@@ -92,12 +100,13 @@ namespace NBA2K12Showcase
 
         private void SetGamepadMode(bool enabled)
         {
-            bool changed = gamepadMode != enabled;
+            if (gamepadMode == enabled)
+                return;
+
             gamepadMode = enabled;
             ApplyInputMode(enabled);
-            if (changed)
-                Debug.Log("[NBA2K12 Showcase] Active input: " +
-                          (enabled ? "gamepad (USB supported where exposed by Input System)" : "keyboard/mouse"), this);
+            Debug.Log("[NBA2K12 Showcase] Active input: " +
+                      (enabled ? "gamepad (USB supported where exposed by Input System)" : "keyboard/mouse"), this);
         }
 
         private void ApplyInputMode(bool enabled)
