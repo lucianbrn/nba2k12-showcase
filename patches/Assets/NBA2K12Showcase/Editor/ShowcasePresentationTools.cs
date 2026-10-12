@@ -173,12 +173,12 @@ namespace NBA2K12Showcase.Editor
             if (data == null) data = Undo.AddComponent<UniversalAdditionalCameraData>(cam.gameObject);
             Undo.RecordObject(data, "Enable Showcase Post Processing");
             data.renderPostProcessing = true;
-            data.antialiasing = AntialiasingMode.SubpixelMorphologicalAntialiasing;
+            data.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
             data.antialiasingQuality = AntialiasingQuality.High;
 
             QualitySettings.antiAliasing = 4;
-            QualitySettings.shadows = ShadowQuality.All;
-            QualitySettings.shadowResolution = ShadowResolution.High;
+            QualitySettings.shadows = UnityEngine.ShadowQuality.All;
+            QualitySettings.shadowResolution = UnityEngine.ShadowResolution.High;
             QualitySettings.shadowCascades = 4;
             QualitySettings.shadowDistance = Mathf.Max(QualitySettings.shadowDistance, 85f);
             QualitySettings.vSyncCount = 1;
