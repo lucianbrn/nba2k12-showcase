@@ -58,6 +58,11 @@ namespace NBA2K12Showcase
 
         public GameObject FallbackPrefab => fallbackPrefab;
         public Transform CurrentModelRoot => currentModelRoot;
+        public bool HasModelForPlayerIndex(int playerIndex)
+        {
+            PlayerSlot slot = FindSlot(playerIndex);
+            return slot != null && slot.modelPrefab != null;
+        }
 
         private void Awake()
         {
