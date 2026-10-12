@@ -164,7 +164,6 @@ namespace NBA2K12Showcase
             SetPrivateField("passCommittedSeconds", 0f, flags);
             SetPrivateField("shotAttempt", false, flags);
             SetPrivateField("shotCommitted", false, flags);
-            SetPrivateField("IsTargetSelectionActive", false, flags);
             SetPrivateField("lockedTarget", null, flags);
             Debug.Log("[NBA2K12 Showcase] Gamepad pass committed to player " + target.PlayerIndex, this);
         }
