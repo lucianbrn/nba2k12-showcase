@@ -112,15 +112,16 @@ namespace NBA2K12Showcase.Editor
         {
             if (!TryGetSelectedPrivateModel(out GameObject selected, out string selectedPath)) return;
 
-            Animator candidateAnimator = selected.GetComponentInChildren<Animator>(true);
-            if (candidateAnimator == null || candidateAnimator.avatar == null || !candidateAnimator.avatar.isHuman)
+            if (!ValidateModelForRetargeting(selected, out string validationFailure))
             {
                 EditorUtility.DisplayDialog(
                     "Showcase Model Integration",
-                    "The selected model does not have a valid Humanoid Avatar. Use menu item 4, then audit with menu item 7. No prefab was changed.",
+                    validationFailure + "\\n\\nUse menu items 4 and 7 to configure/audit the selected FBX. No prefab was changed.",
                     "OK");
                 return;
             }
+
+            Animator candidateAnimator = selected.GetComponentInChildren<Animator>(true);
 
             GameObject prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(VisualPrefabPath);
             if (prefabAsset == null)
@@ -244,6 +245,47 @@ namespace NBA2K12Showcase.Editor
                 saved ? "Showcase Model Integrated" : "Showcase Model Integration Failed",
                 detail,
                 "OK");
+        }
+
+        private static bool ValidateModelForRetargeting(GameObject model, out string reason)
+        {
+            Animator animator = model != null ? model.GetComponentInChildren<Animator>(true) : null;
+            if (animator == null || animator.avatar == null || !animator.avatar.isHuman)
+            {
+                reason = "The selected model has no valid Humanoid Avatar.";
+                return false;
+            }
+
+            for (int i = 0; i < RequiredBones.Length; i++)
+            {
+                if (animator.GetBoneTransform(RequiredBones[i]) == null)
+                {
+                    reason = "The model is missing a required retarget bone: " + RequiredBones[i] + ".";
+                    return false;
+                }
+            }
+
+            SkinnedMeshRenderer[] renderers = model.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            bool hasSkinnedMesh = false;
+            foreach (SkinnedMeshRenderer renderer in renderers)
+            {
+                if (renderer != null && renderer.sharedMesh != null &&
+                    renderer.bones != null && renderer.bones.Length > 0 &&
+                    renderer.rootBone != null)
+                {
+                    hasSkinnedMesh = true;
+                    break;
+                }
+            }
+
+            if (!hasSkinnedMesh)
+            {
+                reason = "No valid SkinnedMeshRenderer with a mesh, weighted bone array, and root bone was found. Static OBJ models are preview-only until they are rigged.";
+                return false;
+            }
+
+            reason = string.Empty;
+            return true;
         }
 
         private static Transform FindModelRoot(
