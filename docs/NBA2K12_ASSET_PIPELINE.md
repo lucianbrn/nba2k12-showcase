@@ -34,6 +34,8 @@ This particular game ID, `BLUS-30944`, is listed as the PS3 NBA 2K12: Game of th
 9. After the audit passes, use **Tools > NBA2K12 Showcase > 8 - Replace In-Game Player Visual with Selected Model (LOCAL)**. It backs up the source visual prefab under `%LOCALAPPDATA%\\NBA2K12Showcase\\Backups` before swapping the shared fallback model. This modifies the local NeuralCourt submodule; the private game files and modified upstream prefab are not committed to the public repository.
 10. To avoid ten copies of one athlete, assign separate imported model prefabs to `ShowcasePlayerVisualVariant` on the source visual prefab using Player Index 0–9 (P1–P10). Each slot must have its own valid Humanoid Avatar if you want distinct face/body meshes. After assigning variants, test the actual 5-on-5 scene and confirm all players animate correctly.
 
+**Important:** do not rerun the upstream `Tools > AI4Animation > Build CrowdEyes-Twin 5v5 Basketball Demo` scene builder after replacing the shared visual prefab unless you first back up the prefab and accept that generated assets/scene files may be rewritten. That builder is intended to regenerate the original synthetic demo, not preserve custom local player assets.
+
 ## Private-asset boundary
 
 Assets extracted from NBA 2K12 may be subject to copyright/trademark restrictions. This public repository contains none of those files. `PrivateAssets` is deliberately Git-ignored. Do not push ripped models, face textures, team logos, music, commentary, or other commercial-game content without redistribution rights.
