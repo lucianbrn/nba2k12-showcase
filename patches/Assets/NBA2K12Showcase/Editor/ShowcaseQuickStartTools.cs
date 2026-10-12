@@ -28,7 +28,7 @@ namespace NBA2K12Showcase.Editor
 
             if (!EditorUtility.DisplayDialog(
                     "NBA2K12 Showcase Quick Start",
-                    "This runs the existing roster/HUD, gameplay-camera, and TV-presentation setup tools in sequence. " +
+                    "This runs the roster/HUD, selects the 2013 Heat vs 2008 Celtics matchup, and applies gameplay-camera, TV-presentation, and USB gamepad setup. " +
                     "It saves local scene/settings changes. It does not download assets or replace player models. Continue?",
                     "Apply Core Setup",
                     "Cancel"))
@@ -43,6 +43,8 @@ namespace NBA2K12Showcase.Editor
 
             Debug.Log("[NBA2K12 Showcase] Quick Start: applying broadcast roster/HUD.");
             ShowcaseGameSetupTools.ApplyBroadcastAndRoster();
+            Debug.Log("[NBA2K12 Showcase] Quick Start: selecting 2013 Heat vs 2008 Celtics.");
+            ShowcaseEraMatchupTools.ApplyDefaultHeatCeltics();
 
             Debug.Log("[NBA2K12 Showcase] Quick Start: applying gameplay camera framing.");
             ShowcasePresentationTools.ApplyGameplayCameraFraming();
