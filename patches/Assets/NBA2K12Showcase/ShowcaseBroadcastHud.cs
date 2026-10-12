@@ -31,6 +31,8 @@ namespace NBA2K12Showcase
         private readonly int[] playerPoints = new int[10];
         private readonly int[] playerFieldGoalsMade = new int[10];
         private readonly int[] playerThreePointersMade = new int[10];
+        // Slots 0-3 are regulation quarters; slot 4 accumulates overtime scoring.
+        private readonly int[,] periodScores = new int[5, 2];
         private float gameClock;
         private float shotClock;
         private int period = 1;
@@ -303,6 +305,12 @@ namespace NBA2K12Showcase
                 playerFieldGoalsMade[score.PlayerIndex]++;
                 if (score.Points == 3) playerThreePointersMade[score.PlayerIndex]++;
             }
+            if (score.TeamId >= 0 && score.TeamId < 2)
+            {
+                int periodSlot = overtime ? 4 : Mathf.Clamp(period - 1, 0, 3);
+                periodScores[periodSlot, score.TeamId] += score.Points;
+            }
+
             ShowcasePlayerIdentity identity = scorer != null
                 ? scorer.GetComponent<ShowcasePlayerIdentity>()
                 : null;
@@ -407,6 +415,7 @@ namespace NBA2K12Showcase
             Array.Clear(playerPoints, 0, playerPoints.Length);
             Array.Clear(playerFieldGoalsMade, 0, playerFieldGoalsMade.Length);
             Array.Clear(playerThreePointersMade, 0, playerThreePointersMade.Length);
+            Array.Clear(periodScores, 0, periodScores.Length);
 
             period = 1;
             overtime = false;
@@ -568,6 +577,7 @@ namespace NBA2K12Showcase
             int away = scoreTracker != null ? scoreTracker.TeamOneScore : 0;
             string result = homeTeamName + "   " + home + "     —     " + away + "   " + awayTeamName;
             GUI.Label(new Rect(x + 30, y + 112, w - 60, 42), result, overlayBodyStyle);
+            GUI.Label(new Rect(x + 30, y + 154, w - 60, 40), BuildPeriodBreakdown(), contextStyle);
 
             if (final)
             {
@@ -590,6 +600,21 @@ namespace NBA2K12Showcase
 
             if (!final && !periodEnded && GUI.Button(new Rect(x + 170, y + 292, 360, 48), "RESTART GAME", buttonStyle))
                 RestartGame();
+        }
+
+        private string BuildPeriodBreakdown()
+        {
+            string[] labels = { "Q1", "Q2", "Q3", "Q4", "OT" };
+            int lastSlot = overtime ? 4 : Mathf.Clamp(period - 1, 0, 3);
+            var segments = new System.Collections.Generic.List<string>();
+            for (int slot = 0; slot <= lastSlot; slot++)
+            {
+                segments.Add(
+                    labels[slot] + " " + periodScores[slot, 0] +
+                    "–" + periodScores[slot, 1]);
+            }
+
+            return "PERIOD SCORES   " + string.Join("    ", segments);
         }
 
         private void EnsureStyles()
