@@ -1,5 +1,7 @@
 # NBA 2K12 Showcase Reconstruction
 
+[![C# syntax validation](https://github.com/lucianbrn/nba2k12-showcase/actions/workflows/csharp-syntax.yml/badge.svg)](https://github.com/lucianbrn/nba2k12-showcase/actions/workflows/csharp-syntax.yml)
+
 A Unity 6 basketball-game reconstruction project. It uses [NeuralCourt Basketball](https://github.com/henry753951/neuralcourt-basketball) as a pinned submodule for the 5-on-5 simulation, synthetic athlete, court, passing, shooting, ball possession, and motion-inference foundation.
 
 ## Non-negotiable quality target
