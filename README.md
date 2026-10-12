@@ -58,6 +58,10 @@ Menu items 10–13 download/use CC0 **static setting and prop geometry**. The sp
 
 For distinct player models, name the imported files `P01_Name.fbx` through `P10_Name.fbx`. Use items 4, 6, and 7 to configure/preview/audit a model, item 8 to install P01 as the shared fallback, then item 15 to assign available model files to player slots. The assignment tool rejects models without a valid Humanoid Avatar, required bones, and a weighted SkinnedMeshRenderer.
 
+### Wired USB controller
+
+Connect an Xbox controller or supported PlayStation controller by USB before or during Play Mode. Move the left stick to activate gamepad input; keyboard/mouse remains available and switches back when used. Left stick moves, right stick aims ball control/pass direction, left-stick click sprints, Y/Triangle shoots, LB/RB or D-pad left/right switches teammates, Start pauses, and A/Cross confirms pause/period/final screens. Hold LT and press A/Cross to request a pass to the teammate indicated by the right stick. Support depends on Windows and the controller exposing a layout supported by Unity Input System; generic HID devices may need mapping.
+
 ## Real players and uniforms
 
 The existing athlete is a synthetic, CC0/attributed-source model, not an NBA likeness. The demo roster provides names and jersey numbers for Lakers/Celtics-era presentation, but it does not extract the actual NBA 2K12 roster. Team palette colors are not real uniforms.
