@@ -133,6 +133,9 @@ namespace NBA2K12Showcase
             if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame && !final && !periodEnded)
                 SetPaused(!paused);
 
+            if (keyboard != null && IsClockRunning)
+                ProcessPlayerSwitchInput(keyboard);
+
             if (!IsClockRunning)
                 return;
 
@@ -151,6 +154,40 @@ namespace NBA2K12Showcase
                     possessionManager.BallState != BasketballPossessionState.ShotFlight)
                     EndPeriod();
             }
+        }
+
+        private void ProcessPlayerSwitchInput(Keyboard keyboard)
+        {
+            if (matchController == null)
+                return;
+
+            int slot = -1;
+            if (keyboard.digit1Key.wasPressedThisFrame) slot = 0;
+            else if (keyboard.digit2Key.wasPressedThisFrame) slot = 1;
+            else if (keyboard.digit3Key.wasPressedThisFrame) slot = 2;
+            else if (keyboard.digit4Key.wasPressedThisFrame) slot = 3;
+            else if (keyboard.digit5Key.wasPressedThisFrame) slot = 4;
+            if (slot < 0)
+                return;
+
+            BasketballTeamMember active = matchController.ActivePlayer;
+            int teamId = active != null
+                ? active.TeamId
+                : possessionManager != null && possessionManager.Owner != null
+                    ? possessionManager.Owner.TeamId
+                    : 0;
+
+            int playerIndex = teamId * 5 + slot;
+            BasketballTeamMember chosen = players.FirstOrDefault(p =>
+                p != null && p.PlayerIndex == playerIndex && p.TeamId == teamId);
+            if (chosen == null)
+                return;
+
+            matchController.SelectPlayer(playerIndex);
+            ShowcasePlayerIdentity identity = chosen.GetComponent<ShowcasePlayerIdentity>();
+            ShowPlayCall(identity != null
+                ? "CONTROL: " + identity.PlayerName.ToUpperInvariant()
+                : "PLAYER " + (slot + 1));
         }
 
         private void UpdatePossessionAndShotClock(float delta)
@@ -460,7 +497,7 @@ namespace NBA2K12Showcase
                 (matchController != null ? matchController.ActivePlayerIndex + 1 : 1);
             string jersey = identity != null ? "#" + identity.JerseyNumber + "  " + identity.Position : "LIVE GAMEPLAY";
             GUI.Label(new Rect(56, y + 10, 560, 30), playerName, teamStyle);
-            GUI.Label(new Rect(56, y + 42, 560, 23), jersey + "    •    WASD MOVE   SHIFT SPRINT   SPACE SHOOT", contextStyle);
+            GUI.Label(new Rect(56, y + 42, 560, 23), jersey + "    •    1-5 SWITCH   WASD MOVE   SHIFT RUN   SPACE SHOOT", contextStyle);
 
             GUI.Box(new Rect(1400, y, 486, 76), GUIContent.none, panelStyle);
             GUI.Label(new Rect(1420, y + 11, 440, 25), "NBA 2K SHOWCASE  /  LIVE", teamStyle);
