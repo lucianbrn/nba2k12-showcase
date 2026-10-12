@@ -69,6 +69,12 @@ For distinct player models, name the imported files `P01_Name.fbx` through `P10_
 
 The optional pre-game intro component is not part of the default startup flow. Use matchup menus 17–19 on the court scene to choose among the three requested teams.
 
+## Supported eras and USB controller
+
+The only selectable teams are the 2013 Miami Heat, 2008 Boston Celtics, and 2017 Golden State Warriors. The game is a two-team matchup at a time; menu items 17–19 select the three pairings. The roster/identity setup does not itself supply authentic player likenesses or stitched uniforms.
+
+Wired USB Xbox and supported PlayStation controllers use Unity Input System gamepad detection. The installer applies right-trigger sprint and X/Square shooting mappings to the local upstream provider, backing up the original file first. D-pad left/right switches the controlled teammate, left trigger + A/Cross requests a pass, bumpers control ball spin, right stick controls ball control, and Start pauses. This requires rerunning the installer after pulling the latest repository changes, then opening the demo scene and running menu 16.
+
 ## Real players and uniforms
 
 The existing athlete is a synthetic base model, not an NBA likeness. The requested Heat/Celtics/Warriors matchups now configure names, numbers and team colors, but those colors are not real uniform textures and the player bodies are not authentic NBA likenesses.
