@@ -44,7 +44,7 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 - **13 — Create Separate CC0 Sports Hall Preview:** creates a separate additive preview scene, not the main basketball arena.
 - **14 — Run Full Game Readiness Audit:** writes a local report with player counts, valid Humanoid Avatar counts, weighted meshes, ball/court references, camera, and blockers.
 - **15 — Assign P01-P10 Player Models by Filename:** validates and maps compatible imported models to player indices automatically.
-- **16 — One-Click Core Setup:** runs the existing roster/HUD, gameplay-camera, and TV-presentation setup in sequence. This is a convenience wrapper; it does not download assets or create authentic NBA player models.
+- **16 — One-Click Core Setup:** runs the existing roster/HUD, gameplay-camera, and TV-presentation setup, and attaches wired USB gamepad support. Xbox/PlayStation gamepads use the Unity Input System; the active input mode switches between gamepad and keyboard/mouse. This is a convenience wrapper; it does not download assets or create authentic NBA player models.
 
 ### First Unity run
 
@@ -52,7 +52,7 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 2. Run **0** and **1** for gameplay framing and URP presentation.
 3. Run **10**, wait for the downloads and Unity's GLB import, then run **12** to install the CC0 basketball mesh.
 4. Run **14** and review the generated readiness report.
-5. Enter Play Mode and test movement, passing, shooting, scoring, shot-clock violations, quarter transitions, and pause/resume.
+5. Run **16** to attach gamepad support, then enter Play Mode and test movement, passing, shooting, scoring, shot-clock violations, quarter transitions, and pause/resume.\n\n### Wired USB controller\n\nConnect an Xbox controller or supported PlayStation controller by USB before or during Play Mode. Move the left stick to activate gamepad input; keyboard/mouse remains available and switches back when used. Left stick moves, right stick aims ball control/pass direction, left-stick click sprints, Y/Triangle shoots, LB/RB or D-pad left/right switches teammates, Start pauses, and A/Cross confirms pause/period/final screens. Hold LT and press A/Cross to request a pass to the teammate indicated by the right stick. Support depends on Windows and the controller exposing a layout supported by Unity Input System; generic HID devices may need mapping.
 
 Menu items 10–13 download/use CC0 **static setting and prop geometry**. The sports centre is a community gym reference, not a pro NBA arena. It has no basketball logic, colliders, or animated players.
 
