@@ -64,7 +64,9 @@ var requiredSourceContracts = new[]
             "keyboard.enterKey.wasPressedThisFrame",
             "keyboard.numpadEnterKey.wasPressedThisFrame",
             "if (final) RestartGame();",
-            "else if (periodEnded) NextPeriod();"
+            "else if (periodEnded) NextPeriod();",
+            "deadBallStopUntil = 0f;",
+            "lastOwnerTeam = starter.TeamId;"
         }),
     (
         File: Path.Combine(sourceRoot, "ShowcaseGamepadSupport.cs"),
