@@ -98,6 +98,40 @@ var requiredSourceContracts = new[]
             "match.SelectPlayer(eligible[next].PlayerIndex);"
         }),
     (
+        File: Path.Combine(sourceRoot, "ShowcaseRuntimeMatchupMenu.cs"),
+        Description: "Runtime menu selects and applies the three supported matchups",
+        Required: new[]
+        {
+            "new Matchup(heat, celtics)",
+            "new Matchup(heat, warriors)",
+            "new Matchup(celtics, warriors)",
+            "private void OnCourtLoaded(Scene scene, LoadSceneMode mode)",
+            "ApplyMatchupToScene(scene, matchups[selected])",
+            "identity.Configure(player.name, player.position, player.number, team.name)",
+            "profile.Configure(slot, source.name, source.primary, source.secondary, Color.white)",
+            "hud.ConfigureTeams(matchup.home.name, matchup.away.name)"
+        }),
+    (
+        File: Path.Combine(sourceRoot, "ShowcaseBroadcastHud.cs"),
+        Description: "Runtime matchup menu can set scoreboard labels",
+        Required: new[]
+        {
+            "public void ConfigureTeams(string homeName, string awayName)",
+            "homeTeamName = string.IsNullOrWhiteSpace(homeName)",
+            "awayTeamName = string.IsNullOrWhiteSpace(awayName)"
+        }),
+    (
+        File: Path.Combine(sourceRoot, "Editor", "ShowcaseRuntimeMenuTools.cs"),
+        Description: "Editor can create a playable menu scene and enable it first",
+        Required: new[]
+        {
+            "20 - Create Playable Matchup Menu",
+            "Assets/Scenes/NBA2K12Menu.unity",
+            "new EditorBuildSettingsScene(MenuScenePath, true)",
+            "new EditorBuildSettingsScene(CourtScenePath, true)",
+            "menuRoot.AddComponent<ShowcaseRuntimeMatchupMenu>()"
+        }),
+    (
         File: Path.Combine(sourceRoot, "Editor", "ShowcaseEraMatchupTools.cs"),
         Description: "Only the three requested historical matchups are selectable",
         Required: new[]
