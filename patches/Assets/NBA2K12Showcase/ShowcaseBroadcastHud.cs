@@ -430,6 +430,7 @@ namespace NBA2K12Showcase
             gameClock = overtime ? overtimeLengthSeconds : quarterLengthSeconds;
             shotClock = shotClockLengthSeconds;
             shotFlightSeen = false;
+            deadBallStopUntil = 0f;
             periodEnded = false;
             paused = false;
             Time.timeScale = restoreTimeScale > 0f ? restoreTimeScale : 1f;
@@ -452,6 +453,8 @@ namespace NBA2K12Showcase
             gameClock = quarterLengthSeconds;
             shotClock = shotClockLengthSeconds;
             shotFlightSeen = false;
+            deadBallStopUntil = 0f;
+            lastOwnerTeam = -1;
             if (players.Length > 0 && possessionManager != null)
             {
                 BasketballTeamMember starter = players.FirstOrDefault(p => p != null && p.TeamId == 0);
@@ -462,6 +465,7 @@ namespace NBA2K12Showcase
                         starter.AimPoint + starter.transform.forward * 0.16f,
                         Quaternion.LookRotation(starter.transform.forward, Vector3.up));
                     matchController?.SelectPlayer(starter.PlayerIndex);
+                    lastOwnerTeam = starter.TeamId;
                 }
             }
 
