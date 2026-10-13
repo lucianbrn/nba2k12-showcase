@@ -48,8 +48,57 @@ foreach (string file in sourceFiles)
         Console.Error.WriteLine(diagnostic.ToString());
 }
 
+// Lightweight source-contract checks cover showcase integrations that syntax parsing alone
+// cannot verify. These are regression guards, not substitutes for Unity compilation or play tests.
+var requiredSourceContracts = new[]
+{
+    (
+        File: Path.Combine(sourceRoot, "ShowcaseBroadcastHud.cs"),
+        Description: "HUD resolves references when enabled",
+        Required: new[]
+        {
+            "private void OnEnable()",
+            "ResolveReferences();",
+            "scoreTracker.Scored -= HandleScore;",
+            "scoreTracker.Scored += HandleScore;"
+        }),
+    (
+        File: Path.Combine(sourceRoot, "ShowcaseGamepadSupport.cs"),
+        Description: "Controller mode can switch back to keyboard/mouse",
+        Required: new[]
+        {
+            "Mouse mouse = Mouse.current;",
+            "bool mouseActive = mouse != null",
+            "else if (keyboardActive || mouseActive)",
+            "int next = current < 0",
+            "match.SelectPlayer(eligible[next].PlayerIndex);"
+        })
+};
+
+foreach (var contract in requiredSourceContracts)
+{
+    if (!File.Exists(contract.File))
+    {
+        Console.Error.WriteLine($"FAIL {contract.Description}: missing {Path.GetFileName(contract.File)}");
+        errors++;
+        continue;
+    }
+
+    string source = File.ReadAllText(contract.File);
+    string[] missing = contract.Required.Where(fragment => !source.Contains(fragment, StringComparison.Ordinal)).ToArray();
+    if (missing.Length == 0)
+    {
+        Console.WriteLine($"PASS contract: {contract.Description}");
+        continue;
+    }
+
+    foreach (string fragment in missing)
+        Console.Error.WriteLine($"FAIL {contract.Description}: expected source fragment not found: {fragment}");
+    errors++;
+}
+
 Console.WriteLine();
-Console.WriteLine($"Checked {sourceFiles.Length} C# files; syntax errors: {errors}.");
-Console.WriteLine("This validates C# syntax only. It does not compile against Unity assemblies or test a Unity scene.");
+Console.WriteLine($"Checked {sourceFiles.Length} C# files; syntax/contract errors: {errors}.");
+Console.WriteLine("This validates C# syntax and selected source contracts only. It does not compile against Unity assemblies or test a Unity scene.");
 
 return errors == 0 ? 0 : 1;
