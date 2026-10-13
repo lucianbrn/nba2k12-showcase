@@ -179,21 +179,6 @@ namespace NBA2K12Showcase
             Debug.Log("[NBA2K12 Showcase] Gamepad pass committed to player " + target.PlayerIndex, this);
         }
 
-        private void TogglePause()
-        {
-            ShowcaseBroadcastHud hud = FindFirstObjectByType<ShowcaseBroadcastHud>();
-            if (hud == null)
-                return;
-            FieldInfo pausedField = typeof(ShowcaseBroadcastHud).GetField(
-                "paused", BindingFlags.Instance | BindingFlags.NonPublic);
-            MethodInfo setPaused = typeof(ShowcaseBroadcastHud).GetMethod(
-                "SetPaused", BindingFlags.Instance | BindingFlags.NonPublic);
-            if (pausedField == null || setPaused == null)
-                return;
-            bool paused = (bool)pausedField.GetValue(hud);
-            setPaused.Invoke(hud, new object[] { !paused });
-        }
-
         private void SetPrivateField(string fieldName, object value, BindingFlags flags)
         {
             FieldInfo field = typeof(BasketballMatchController).GetField(fieldName, flags);
