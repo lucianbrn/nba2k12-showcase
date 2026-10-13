@@ -56,7 +56,7 @@ Write-Host "Running batch-mode project import and C# compilation (timeout: $Time
 # upgraded between Unity versions can report avoidable compile failures.
 $arguments = @('-accept-apiupdate', '-batchmode', '-quit', '-projectPath', ('"' + $project + '"'), '-logFile', ('"' + $log + '"'))
 $process = Start-Process -FilePath $editor -ArgumentList $arguments -PassThru
-$timeoutMilliseconds = [int]([Math]::Min([long]::MaxValue, $TimeoutMinutes * 60L * 1000L))
+$timeoutMilliseconds = $TimeoutMinutes * 60 * 1000
 if (-not $process.WaitForExit($timeoutMilliseconds)) {
     try { $process.Kill() } catch { }
     throw "Unity batch validation exceeded $TimeoutMinutes minutes. Process was stopped; inspect $log for an import/package stall."
