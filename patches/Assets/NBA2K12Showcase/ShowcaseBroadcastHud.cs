@@ -140,7 +140,7 @@ namespace NBA2K12Showcase
         private T FindSceneComponent<T>() where T : Component
         {
             return UnityEngine.Object.FindObjectsByType<T>(
-                    FindObjectsInactive.Include, FindObjectsSortMode.None)
+                    FindObjectsInactive.Exclude, FindObjectsSortMode.None)
                 .FirstOrDefault(candidate =>
                     candidate != null && candidate.gameObject.scene == gameObject.scene);
         }
