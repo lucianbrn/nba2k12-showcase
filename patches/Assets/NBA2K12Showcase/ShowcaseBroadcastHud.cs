@@ -82,6 +82,13 @@ namespace NBA2K12Showcase
                 lastOwnerTeam = possessionManager.Owner.TeamId;
         }
 
+        public void ConfigureTeams(string homeName, string awayName)
+        {
+            homeTeamName = string.IsNullOrWhiteSpace(homeName) ? "HOME" : homeName.Trim();
+            awayTeamName = string.IsNullOrWhiteSpace(awayName) ? "AWAY" : awayName.Trim();
+            ShowPlayCall(homeTeamName + "  VS  " + awayTeamName);
+        }
+
         private void OnEnable()
         {
             // A scene can enable this HUD before other gameplay components finish
