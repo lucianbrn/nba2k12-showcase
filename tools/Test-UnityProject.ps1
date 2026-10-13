@@ -93,12 +93,11 @@ $fatalImportPatterns = @(
     '(?im)^.*Aborting batchmode due to failure.*$',
     '(?im)^.*Assembly-CSharp.*error.*$'
 )
-$fatalImportErrors = @(
-    foreach ($pattern in $fatalImportPatterns) {
-        [regex]::Matches($logText, $pattern) |
-            ForEach-Object { $_.Value.Trim() }
-    } | Select-Object -Unique
-)
+$fatalImportMatches = foreach ($pattern in $fatalImportPatterns) {
+    [regex]::Matches($logText, $pattern) |
+        ForEach-Object { $_.Value.Trim() }
+}
+$fatalImportErrors = @($fatalImportMatches | Select-Object -Unique)
 if ($fatalImportErrors.Count -gt 0) {
     Write-Host "`nUnity import/compilation failures:" -ForegroundColor Red
     $fatalImportErrors | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
