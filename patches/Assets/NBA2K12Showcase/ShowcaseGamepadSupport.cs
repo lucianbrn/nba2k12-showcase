@@ -72,6 +72,7 @@ namespace NBA2K12Showcase
                  keyboard.digit1Key.wasPressedThisFrame || keyboard.digit2Key.wasPressedThisFrame ||
                  keyboard.digit3Key.wasPressedThisFrame || keyboard.digit4Key.wasPressedThisFrame ||
                  keyboard.digit5Key.wasPressedThisFrame ||
+                 keyboard.enterKey.wasPressedThisFrame || keyboard.numpadEnterKey.wasPressedThisFrame ||
                  keyboard.leftShiftKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame ||
                  keyboard.leftCtrlKey.wasPressedThisFrame || keyboard.rightCtrlKey.wasPressedThisFrame ||
                  keyboard.escapeKey.wasPressedThisFrame);
