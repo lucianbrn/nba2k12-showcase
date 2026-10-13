@@ -59,6 +59,12 @@ var requiredSourceContracts = new[]
         {
             "private void OnEnable()",
             "ResolveReferences();",
+            "private BasketballScoreTracker subscribedScoreTracker;",
+            "private void BindScoreEvent()",
+            "if (subscribedScoreTracker == scoreTracker)",
+            "subscribedScoreTracker.Scored -= HandleScore;",
+            "subscribedScoreTracker.Scored += HandleScore;",
+            "if (matchController == null || scoreTracker == null || possessionManager == null)",
             "scoreTracker.Scored -= HandleScore;",
             "scoreTracker.Scored += HandleScore;",
             "keyboard.enterKey.wasPressedThisFrame",
