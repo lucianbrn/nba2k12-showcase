@@ -17,7 +17,7 @@ namespace NBA2K12Showcase
         [SerializeField] private BasketballMatchController matchController;
         [SerializeField] private BasketballScoreTracker scoreTracker;
         [SerializeField] private BasketballPossessionManager possessionManager;
-        [SerializeField] private string homeTeamName = "LOS ANGELES LAKERS";
+        [SerializeField] private string homeTeamName = "MIAMI HEAT";
         [SerializeField] private string awayTeamName = "BOSTON CELTICS";
 
         [Header("Clock rules")]
@@ -633,8 +633,8 @@ namespace NBA2K12Showcase
             if (stylesReady)
                 return;
             panelTexture = MakeTexture(new Color(0.025f, 0.04f, 0.065f, 0.94f));
-            homeTexture = MakeTexture(GetTeamColor(homeTeamName, new Color(0.22f, 0.07f, 0.38f, 0.99f)));
-            awayTexture = MakeTexture(GetTeamColor(awayTeamName, new Color(0.0f, 0.30f, 0.17f, 0.99f)));
+            homeTexture = MakeTexture(GetTeamColor(homeTeamName, new Color(0.60f, 0.00f, 0.18f, 0.99f)));
+            awayTexture = MakeTexture(GetTeamColor(awayTeamName, new Color(0.00f, 0.48f, 0.20f, 0.99f)));
             limeTexture = MakeTexture(new Color(0.79f, 0.95f, 0.43f, 1f));
 
             panelStyle = new GUIStyle(GUI.skin.box)
