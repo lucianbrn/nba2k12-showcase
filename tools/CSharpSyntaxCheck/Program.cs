@@ -81,12 +81,29 @@ var requiredSourceContracts = new[]
             "Pass cancelled before possession changes",
             "field.IsInitOnly || field.IsLiteral",
             "match.PossessionManager.RequestPass(active, target)",
+            "Vector3.ProjectOnPlane(Camera.main.transform.forward, Vector3.up)",
+            "cameraRight * aim.x + cameraForward * aim.y",
             "previousValues = fields.Select(field => field.GetValue(match)).ToArray()",
             "previous possession was restored",
             "match.PossessionManager.ResetPossession(",
             "int next = current < 0",
             "match.SelectPlayer(eligible[next].PlayerIndex);"
         })
+    (
+        File: Path.Combine(sourceRoot, "Editor", "ShowcaseEraMatchupTools.cs"),
+        Description: "Only the three requested historical matchups are selectable",
+        Required: new[]
+        {
+            "MIAMI HEAT",
+            "BOSTON CELTICS",
+            "GOLDEN STATE WARRIORS",
+            "17 - Matchup: 2013 Heat vs 2008 Celtics",
+            "18 - Matchup: 2013 Heat vs 2017 Warriors",
+            "19 - Matchup: 2008 Celtics vs 2017 Warriors",
+            "new Player(\"LeBron James\", \"SF\", 6)",
+            "new Player(\"Stephen Curry\", \"PG\", 30)",
+            "new Player(\"Kevin Garnett\", \"PF\", 5)"
+        }),
 };
 
 foreach (var contract in requiredSourceContracts)
