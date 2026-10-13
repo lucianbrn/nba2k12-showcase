@@ -129,12 +129,20 @@ namespace NBA2K12Showcase
         private void ResolveReferences()
         {
             if (matchController == null)
-                matchController = UnityEngine.Object.FindFirstObjectByType<BasketballMatchController>();
+                matchController = FindSceneComponent<BasketballMatchController>();
             if (scoreTracker == null)
-                scoreTracker = UnityEngine.Object.FindFirstObjectByType<BasketballScoreTracker>();
+                scoreTracker = FindSceneComponent<BasketballScoreTracker>();
             if (possessionManager == null)
-                possessionManager = UnityEngine.Object.FindFirstObjectByType<BasketballPossessionManager>();
+                possessionManager = FindSceneComponent<BasketballPossessionManager>();
             BindScoreEvent();
+        }
+
+        private T FindSceneComponent<T>() where T : Component
+        {
+            return UnityEngine.Object.FindObjectsByType<T>(
+                    FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault(candidate =>
+                    candidate != null && candidate.gameObject.scene == gameObject.scene);
         }
 
         private void BindScoreEvent()
