@@ -47,7 +47,8 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 - **16 — One-Click Core Setup:** runs the existing roster/HUD, gameplay-camera, and TV-presentation setup, and attaches wired USB gamepad support. Xbox/PlayStation gamepads use the Unity Input System; the active input mode switches between gamepad and keyboard/mouse. This is a convenience wrapper; it does not download assets or create authentic NBA player models.
 - **17 — Matchup: 2013 Heat vs 2008 Celtics.**
 - **18 — Matchup: 2013 Heat vs 2017 Warriors.**
-- **19 — Matchup: 2008 Celtics vs 2017 Warriors.** These apply roster names, jersey numbers, team color profiles and scoreboard names. The game currently supports two teams per match, so choose one matchup at a time. Quick Start defaults to 2013 Heat vs 2008 Celtics.
+- **19 — Matchup: 2008 Celtics vs 2017 Warriors.** These apply roster names, jersey numbers, team color profiles and scoreboard names.
+- **20 — Create Playable Matchup Menu:** creates `Assets/Scenes/NBA2K12Menu.unity`, adds the three-pairing runtime selector, and puts the menu before `BasketballDemo` in Build Settings. Press Play from the generated menu scene to choose a matchup; it applies runtime player identities, jersey numbers, available team appearance profiles and scoreboard labels before tip-off. The game currently supports two teams per match, so choose one matchup at a time. Quick Start defaults to 2013 Heat vs 2008 Celtics.
 
 ### First Unity run
 
@@ -55,7 +56,8 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 2. Run **0** and **1** for gameplay framing and URP presentation.
 3. Run **10**, wait for the downloads and Unity's GLB import, then run **12** to install the CC0 basketball mesh.
 4. Run **14** and review the generated readiness report.
-5. Run **16** to apply the default 2013 Heat vs 2008 Celtics matchup and attach gamepad support, then enter Play Mode and test movement, passing, shooting, scoring, shot-clock violations, quarter transitions, and pause/resume. Use menu items **17–19** to select either of the other matchups.
+5. Run **16** to apply the default 2013 Heat vs 2008 Celtics matchup and attach gamepad support.
+6. Run **20** to create the playable matchup menu scene, then press Play from `NBA2K12Menu`. Choose one of the three matchups and confirm the starting lineups; the menu loads the court and applies roster identity/appearance settings at runtime. Test movement, passing, shooting, scoring, shot-clock violations, quarter transitions, and pause/resume. You can still use menu items **17–19** to set a matchup directly in the editor.
 
 ### Wired USB controller
 
@@ -67,7 +69,7 @@ For distinct player models, name the imported files `P01_Name.fbx` through `P10_
 
 ### Pre-game team-selection sequence
 
-The optional pre-game intro component is not part of the default startup flow. Use matchup menus 17–19 on the court scene to choose among the three requested teams.
+The runtime matchup menu is generated with editor menu item **20**. It creates a bootstrap scene and places it first in Build Settings, allowing the game to start with a real matchup selection flow. The menu supports the 2013 Heat, 2008 Celtics, and 2017 Warriors pairings. Its roster/appearance changes do not create authentic player meshes, stitched uniforms, or new animation clips.
 
 ## Supported eras and USB controller
 
