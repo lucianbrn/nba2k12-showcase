@@ -48,8 +48,16 @@ namespace NBA2K12Showcase.Editor
                     FindObjectsInactive.Include, FindObjectsSortMode.None)
                 .FirstOrDefault(v => v != null && v.gameObject.scene == scene);
 
+            ShowcaseGamepadSupport gamepadSupport = UnityEngine.Object.FindObjectsByType<ShowcaseGamepadSupport>(
+                    FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault(v => v != null && v.gameObject.scene == scene);
+
             int homeCount = players.Count(p => p.TeamId == 0);
             int awayCount = players.Count(p => p.TeamId == 1);
+            string[] allowedTeams = { "MIAMI HEAT", "BOSTON CELTICS", "GOLDEN STATE WARRIORS" };
+            int recognizedTeamIdentities = players
+                .Select(p => p.GetComponent<ShowcasePlayerIdentity>())
+                .Count(identity => identity != null && allowedTeams.Contains(identity.TeamName));
             int identities = 0;
             int appearances = 0;
             int retargeters = 0;
@@ -169,6 +177,8 @@ namespace NBA2K12Showcase.Editor
                 blockers.Add("FAIL: Expected 10 players (5 per team); found " + players.Length + " total, " + homeCount + " home, " + awayCount + " away.");
             if (identities != 10)
                 blockers.Add("WARN: Only " + identities + "/10 players have ShowcasePlayerIdentity metadata.");
+            if (identities == 10 && recognizedTeamIdentities != 10)
+                blockers.Add("WARN: Only " + recognizedTeamIdentities + "/10 player identities use one of the supported teams (2013 Miami Heat, 2008 Boston Celtics, 2017 Golden State Warriors). Apply one of matchup tools 17–19.");
             if (mappedVisualVariants < 10)
                 blockers.Add("BLOCKER: Only " + mappedVisualVariants + "/10 player model variants are assigned. All ten require proper models to meet the differentiated-athlete target.");
             if (retargeters < 10)
@@ -189,6 +199,8 @@ namespace NBA2K12Showcase.Editor
                 blockers.Add("FAIL: Match controller or score tracker is missing.");
             if (hud == null)
                 blockers.Add("WARN: Live broadcast HUD is not installed on the active scene.");
+            if (gamepadSupport == null)
+                blockers.Add("BLOCKER: USB controller support component is missing from the active scene. Run Tools > NBA2K12 Showcase > 16 - One-Click Core Setup, then test a wired Xbox/PlayStation controller in Play Mode.");
             if (mainCamera == null)
                 blockers.Add("FAIL: No enabled gameplay camera found.");
             else if (cameraData == null || !cameraData.renderPostProcessing)
@@ -212,6 +224,7 @@ namespace NBA2K12Showcase.Editor
             report.AppendLine("STRUCTURE");
             report.AppendLine("Players: " + players.Length + " (Team 0: " + homeCount + ", Team 1: " + awayCount + ")");
             report.AppendLine("Roster identities: " + identities + "/10");
+            report.AppendLine("Supported-team identities: " + recognizedTeamIdentities + "/10 (Heat 2013, Celtics 2008, Warriors 2017)");
             report.AppendLine("Player appearances: " + appearances);
             report.AppendLine("Retargeters: " + retargeters + "; valid Humanoid avatars: " + validHumanoids);
             report.AppendLine("Weighted skinned meshes under players: " + weightedSkinnedMeshes);
@@ -225,6 +238,7 @@ namespace NBA2K12Showcase.Editor
             report.AppendLine("Court + two hoops: " + (court != null && court.PositiveZHoop != null && court.NegativeZHoop != null));
             report.AppendLine("Match + score tracker: " + (match != null && scores != null));
             report.AppendLine("Broadcast HUD: " + (hud != null));
+            report.AppendLine("USB gamepad support component: " + (gamepadSupport != null));
             report.AppendLine("Enabled cameras: " + cameras.Length + "; directional lights: " + directionalLights);
             report.AppendLine();
             report.AppendLine("BLOCKERS / WARNINGS");
