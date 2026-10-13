@@ -59,7 +59,7 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 
 ### Wired USB controller
 
-Connect a supported Xbox or PlayStation controller by USB before or during Play Mode. Left stick moves, right stick controls ball handling, left-stick click (L3) sprints, Y/Triangle shoots, B/Circle holds the ball, LB/RB spins the ball, D-pad left/right switches teammates, D-pad up/down adjusts ball height, Start pauses, and LT + A/Cross requests a pass in the right-stick direction. Keyboard/mouse remains available and takes control when used. Windows and Unity must recognize the device as a supported Gamepad; generic HID controllers may need a mapping.
+Connect a supported Xbox or PlayStation controller by USB before or during Play Mode. Left stick moves, right stick controls ball handling, right trigger or left-stick click (L3) sprints, X/Square or Y/Triangle shoots, B/Circle holds the ball, LB/RB spins the ball, D-pad left/right switches teammates, D-pad up/down adjusts ball height, Start pauses, and LT + A/Cross requests a pass in the right-stick direction. Keyboard/mouse remains available and takes control when used. Press Enter or numpad Enter to resume, advance a period, or restart after the final horn. Windows and Unity must recognize the device as a supported Gamepad; generic HID controllers may need a mapping.
 
 Menu items 10–13 download/use CC0 **static setting and prop geometry**. The sports centre is a community gym reference, not a pro NBA arena. It has no basketball logic, colliders, or animated players.
 
@@ -73,7 +73,7 @@ The optional pre-game intro component is not part of the default startup flow. U
 
 The only selectable teams are the 2013 Miami Heat, 2008 Boston Celtics, and 2017 Golden State Warriors. The game is a two-team matchup at a time; menu items 17–19 select the three pairings. The roster/identity setup does not itself supply authentic player likenesses or stitched uniforms.
 
-Wired USB Xbox and supported PlayStation controllers use Unity Input System gamepad detection. The installer applies right-trigger sprint and X/Square shooting mappings to the local upstream provider, backing up the original file first. D-pad left/right switches the controlled teammate, left trigger + A/Cross requests a pass, bumpers control ball spin, right stick controls ball control, and Start pauses. This requires rerunning the installer after pulling the latest repository changes, then opening the demo scene and running menu 16.
+Wired USB Xbox and supported PlayStation controllers use Unity Input System gamepad detection. The installer adds right-trigger sprint and X/Square shooting mappings alongside the upstream L3 sprint and Y/Triangle shooting bindings, backing up the original file first. D-pad left/right switches the controlled teammate, left trigger + A/Cross requests a pass, bumpers control ball spin, right stick controls ball control, and Start pauses. This requires rerunning the installer after pulling the latest repository changes, then opening the demo scene and running menu 16.
 
 ## Real players and uniforms
 
