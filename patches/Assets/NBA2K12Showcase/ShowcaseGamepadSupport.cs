@@ -45,6 +45,7 @@ namespace NBA2K12Showcase
 
             Gamepad pad = Gamepad.current;
             Keyboard keyboard = Keyboard.current;
+            Mouse mouse = Mouse.current;
 
             bool gamepadActive = pad != null &&
                 (pad.leftStick.ReadValue().sqrMagnitude > 0.04f ||
@@ -64,15 +65,23 @@ namespace NBA2K12Showcase
             bool keyboardActive = keyboard != null &&
                 (keyboard.wKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
                  keyboard.sKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame ||
+                 keyboard.qKey.wasPressedThisFrame || keyboard.eKey.wasPressedThisFrame ||
                  keyboard.spaceKey.wasPressedThisFrame || keyboard.tabKey.wasPressedThisFrame ||
-                 keyboard.leftShiftKey.wasPressedThisFrame || keyboard.leftCtrlKey.wasPressedThisFrame ||
+                 keyboard.digit1Key.wasPressedThisFrame || keyboard.digit2Key.wasPressedThisFrame ||
+                 keyboard.digit3Key.wasPressedThisFrame || keyboard.digit4Key.wasPressedThisFrame ||
+                 keyboard.digit5Key.wasPressedThisFrame ||
+                 keyboard.leftShiftKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame ||
+                 keyboard.leftCtrlKey.wasPressedThisFrame || keyboard.rightCtrlKey.wasPressedThisFrame ||
                  keyboard.escapeKey.wasPressedThisFrame);
+            bool mouseActive = mouse != null &&
+                (mouse.leftButton.wasPressedThisFrame || mouse.rightButton.wasPressedThisFrame ||
+                 mouse.middleButton.wasPressedThisFrame);
 
             if (pad == null)
                 SetGamepadMode(false);
             else if (gamepadActive)
                 SetGamepadMode(true);
-            else if (keyboardActive)
+            else if (keyboardActive || mouseActive)
                 SetGamepadMode(false);
 
             if (!gamepadMode || pad == null)
