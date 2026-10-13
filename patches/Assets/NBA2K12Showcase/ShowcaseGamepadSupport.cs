@@ -60,7 +60,8 @@ namespace NBA2K12Showcase
                  pad.startButton.wasPressedThisFrame ||
                  pad.leftStickButton.wasPressedThisFrame ||
                  pad.leftTrigger.wasPressedThisFrame ||
-                 pad.rightTrigger.wasPressedThisFrame);
+                 pad.rightTrigger.wasPressedThisFrame ||
+                 pad.rightTrigger.ReadValue() > 0.1f);
 
             bool keyboardActive = keyboard != null &&
                 (keyboard.wKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
