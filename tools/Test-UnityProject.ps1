@@ -13,7 +13,7 @@ function Find-UnityEditor {
 
     $hubRoots = @(
         (Join-Path $env:ProgramFiles 'Unity Hub\Editor'),
-        (Join-Path \${env:ProgramFiles(x86)} 'Unity\Hub\Editor'),
+        (Join-Path ${env:ProgramFiles(x86)} 'Unity\Hub\Editor'),
         (Join-Path $env:LOCALAPPDATA 'Programs\Unity Hub\Editor')
     ) | Where-Object { $_ -and (Test-Path -LiteralPath $_) }
 
@@ -60,16 +60,16 @@ $unityErrors = [regex]::Matches($logText, '(?im)^.*\b(error|exception)\b.*$') |
     ForEach-Object { $_.Value.Trim() } | Select-Object -Unique
 
 if ($compileErrors.Count -gt 0) {
-    Write-Host "\`nC# compile errors:" -ForegroundColor Red
+    Write-Host "`nC# compile errors:" -ForegroundColor Red
     $compileErrors | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
     exit 1
 }
 if ($process.ExitCode -ne 0) {
-    Write-Host "\`nUnity exited with code $($process.ExitCode). Review $log" -ForegroundColor Red
+    Write-Host "`nUnity exited with code $($process.ExitCode). Review $log" -ForegroundColor Red
     $unityErrors | Select-Object -Last 30 | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
     exit $process.ExitCode
 }
 
-Write-Host "\`nBatch-mode import/compile completed without reported C# compiler errors." -ForegroundColor Green
+Write-Host "`nBatch-mode import/compile completed without reported C# compiler errors." -ForegroundColor Green
 Write-Host "Log saved to: $log"
 Write-Host 'Next: open BasketballDemo.unity, run Tools > NBA2K12 Showcase > 16 - One-Click Core Setup, then test 5v5 movement, pass, shoot, score/restart, and a wired controller in Play Mode.'
