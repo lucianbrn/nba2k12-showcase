@@ -158,6 +158,17 @@ namespace NBA2K12Showcase
                 else SetPaused(false);
             }
 
+            // Keyboard users need a way to continue after a quarter/overtime and restart
+            // after the final horn; Escape is intentionally reserved for pause toggling.
+            if (keyboard != null &&
+                (keyboard.enterKey.wasPressedThisFrame || keyboard.numpadEnterKey.wasPressedThisFrame) &&
+                (paused || periodEnded || final))
+            {
+                if (final) RestartGame();
+                else if (periodEnded) NextPeriod();
+                else SetPaused(false);
+            }
+
             if (keyboard != null && IsClockRunning)
                 ProcessPlayerSwitchInput(keyboard);
 
