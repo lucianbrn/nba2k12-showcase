@@ -234,6 +234,7 @@ namespace NBA2K12Showcase
                 }
             }
 
+            object[] previousValues = fields.Select(field => field.GetValue(match)).ToArray();
             if (!match.PossessionManager.RequestPass(active, target))
                 return;
 
@@ -246,8 +247,27 @@ namespace NBA2K12Showcase
             }
             catch (Exception exception)
             {
+                // Roll back partial reflection writes and restore the original ball owner.
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    try { fields[i].SetValue(match, previousValues[i]); }
+                    catch (Exception rollbackException)
+                    {
+                        Debug.LogWarning(
+                            "[NBA2K12 Showcase] Could not roll back pass field " + fieldNames[i] +
+                            ": " + rollbackException.Message,
+                            this);
+                    }
+                }
+
+                Vector3 recoveryBallPosition = active.AimPoint + active.transform.forward * 0.16f;
+                match.PossessionManager.ResetPossession(
+                    active,
+                    recoveryBallPosition,
+                    Quaternion.LookRotation(active.transform.forward, Vector3.up));
                 Debug.LogError(
-                    "[NBA2K12 Showcase] Pass lifecycle update failed after pass request: " + exception.Message,
+                    "[NBA2K12 Showcase] Pass lifecycle update failed; previous possession was restored. " +
+                    exception.Message,
                     this);
                 return;
             }
