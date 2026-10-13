@@ -60,7 +60,11 @@ var requiredSourceContracts = new[]
             "private void OnEnable()",
             "ResolveReferences();",
             "scoreTracker.Scored -= HandleScore;",
-            "scoreTracker.Scored += HandleScore;"
+            "scoreTracker.Scored += HandleScore;",
+            "keyboard.enterKey.wasPressedThisFrame",
+            "keyboard.numpadEnterKey.wasPressedThisFrame",
+            "if (final) RestartGame();",
+            "else if (periodEnded) NextPeriod();"
         }),
     (
         File: Path.Combine(sourceRoot, "ShowcaseGamepadSupport.cs"),
