@@ -65,8 +65,6 @@ var requiredSourceContracts = new[]
             "subscribedScoreTracker.Scored -= HandleScore;",
             "subscribedScoreTracker.Scored += HandleScore;",
             "if (matchController == null || scoreTracker == null || possessionManager == null)",
-            "scoreTracker.Scored -= HandleScore;",
-            "scoreTracker.Scored += HandleScore;",
             "keyboard.enterKey.wasPressedThisFrame",
             "keyboard.numpadEnterKey.wasPressedThisFrame",
             "if (final) RestartGame();",
