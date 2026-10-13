@@ -59,7 +59,7 @@ Use `Tools > NBA2K12 Showcase` after scripts compile:
 
 ### Wired USB controller
 
-Connect a supported Xbox or PlayStation controller by USB before or during Play Mode. Left stick moves, right stick controls ball handling, left-stick click sprints, Y/Triangle shoots, LB/RB or D-pad left/right switches teammates, Start pauses, and LT + A/Cross requests a pass in the right-stick direction. Keyboard/mouse remains available and takes control when used. Windows and Unity must recognize the device as a supported Gamepad; generic HID controllers may need a mapping.
+Connect a supported Xbox or PlayStation controller by USB before or during Play Mode. Left stick moves, right stick controls ball handling, left-stick click (L3) sprints, Y/Triangle shoots, B/Circle holds the ball, LB/RB spins the ball, D-pad left/right switches teammates, D-pad up/down adjusts ball height, Start pauses, and LT + A/Cross requests a pass in the right-stick direction. Keyboard/mouse remains available and takes control when used. Windows and Unity must recognize the device as a supported Gamepad; generic HID controllers may need a mapping.
 
 Menu items 10–13 download/use CC0 **static setting and prop geometry**. The sports centre is a community gym reference, not a pro NBA arena. It has no basketball logic, colliders, or animated players.
 
