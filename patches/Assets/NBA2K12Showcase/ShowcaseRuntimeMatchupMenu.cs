@@ -245,6 +245,30 @@ namespace NBA2K12Showcase
             Destroy(gameObject);
         }
 
+        private static void ConfigureRuntimeProfile(
+            BasketballTeamAppearanceProfile profile, int teamId, Team team)
+        {
+            if (profile == null || team == null) return;
+            SetRuntimeField(profile, "teamId", Mathf.Max(0, teamId));
+            SetRuntimeField(profile, "displayName", team.name);
+            SetRuntimeField(profile, "jerseyColor", team.primary);
+            SetRuntimeField(profile, "shortsColor", team.secondary);
+            SetRuntimeField(profile, "numberColor", Color.white);
+        }
+
+        private static void SetRuntimeField(object target, string fieldName, object value)
+        {
+            if (target == null || value == null) return;
+            FieldInfo field = FindFieldInHierarchy(target.GetType(), fieldName);
+            if (field == null || field.IsInitOnly || field.IsLiteral ||
+                !field.FieldType.IsInstanceOfType(value))
+            {
+                Debug.LogWarning("[NBA2K12 Showcase] Could not set runtime appearance field '" + fieldName + "'.");
+                return;
+            }
+            field.SetValue(target, value);
+        }
+
         private static FieldInfo FindFieldInHierarchy(Type type, string fieldName)
         {
             for (Type current = type; current != null; current = current.BaseType)
@@ -297,7 +321,7 @@ namespace NBA2K12Showcase
                             BasketballTeamAppearanceProfile profile = assigned.GetValue(slot) as BasketballTeamAppearanceProfile;
                             if (profile == null || !profiles.Add(profile)) continue;
                             Team source = slot == 0 ? matchup.home : matchup.away;
-                            profile.Configure(slot, source.name, source.primary, source.secondary, Color.white);
+                            ConfigureRuntimeProfile(profile, slot, source);
                         }
                     }
                     appearance.Apply();
