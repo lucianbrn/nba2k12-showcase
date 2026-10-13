@@ -68,6 +68,54 @@ namespace NBA2K12Showcase.Editor
             int missing = 0;
             string missingNames = string.Empty;
             bool humanoid = animator != null && animator.avatar != null && animator.avatar.isHuman;
+            int totalTriangles = 0;
+            int weightedSkinnedRenderers = 0;
+            int missingMaterialSlots = 0;
+            int texturelessMaterials = 0;
+            int highestTextureDimension = 0;
+            int texturesAtLeast1K = 0;
+            Renderer bodyCandidate = FindRenderer(renderers, "skin", "body", "head");
+            Renderer jerseyCandidate = FindRenderer(renderers, "jersey", "shirt", "uniform", "top");
+            Renderer shortsCandidate = FindRenderer(renderers, "shorts", "trunks", "pants", "bottom");
+            foreach (SkinnedMeshRenderer skin in skinned)
+            {
+                if (skin == null || skin.sharedMesh == null) continue;
+                totalTriangles += CountTriangles(skin.sharedMesh);
+                if (skin.bones != null && skin.bones.Length > 0 && skin.rootBone != null)
+                    weightedSkinnedRenderers++;
+            }
+            foreach (MeshFilter filter in model.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter != null && filter.sharedMesh != null)
+                    totalTriangles += CountTriangles(filter.sharedMesh);
+            }
+            foreach (Renderer renderer in renderers)
+            {
+                if (renderer == null) continue;
+                Material[] materials = renderer.sharedMaterials;
+                if (materials == null || materials.Length == 0)
+                {
+                    missingMaterialSlots++;
+                    continue;
+                }
+                foreach (Material material in materials)
+                {
+                    if (material == null)
+                    {
+                        missingMaterialSlots++;
+                        continue;
+                    }
+                    Texture texture = material.mainTexture;
+                    if (texture == null)
+                    {
+                        texturelessMaterials++;
+                        continue;
+                    }
+                    int dimension = Mathf.Max(texture.width, texture.height);
+                    highestTextureDimension = Mathf.Max(highestTextureDimension, dimension);
+                    if (dimension >= 1024) texturesAtLeast1K++;
+                }
+            }
             if (humanoid)
             {
                 foreach (HumanBodyBones bone in RequiredBones)
@@ -89,6 +137,21 @@ namespace NBA2K12Showcase.Editor
             if (missingNames.Length > 0) report.Append(missingNames);
             report.AppendLine("Renderers: " + renderers.Length);
             report.AppendLine("Skinned Mesh Renderers: " + skinned.Length);
+            report.AppendLine("Weighted skinned renderers: " + weightedSkinnedRenderers);
+            report.AppendLine("Total model triangles: " + totalTriangles.ToString("N0"));
+            report.AppendLine("Texture detail: largest texture " + highestTextureDimension + " px; materials using 1K+ textures " + texturesAtLeast1K);
+            report.AppendLine("Material issues: " + missingMaterialSlots + " missing slots; " + texturelessMaterials + " materials without main textures");
+            report.AppendLine("Auto-detected body renderer: " + NameOrNone(bodyCandidate));
+            report.AppendLine("Auto-detected jersey renderer: " + NameOrNone(jerseyCandidate));
+            report.AppendLine("Auto-detected shorts renderer: " + NameOrNone(shortsCandidate));
+            if (totalTriangles < 20000)
+                report.AppendLine("QUALITY BLOCKER: Under 20,000 triangles. Verify silhouette and detail; this may be a placeholder/low-detail mesh.");
+            if (weightedSkinnedRenderers == 0)
+                report.AppendLine("QUALITY BLOCKER: No weighted skinned mesh. This model cannot deform with the player rig.");
+            if (texturesAtLeast1K == 0)
+                report.AppendLine("QUALITY WARNING: No material uses a texture at least 1024 px on its longest side.");
+            if (jerseyCandidate == null || shortsCandidate == null)
+                report.AppendLine("QUALITY WARNING: Jersey/shorts renderers were not identified by name; inspect the materials and mesh layout manually.");
             for (int i = 0; i < renderers.Length; i++)
             {
                 Renderer renderer = renderers[i];
@@ -296,6 +359,15 @@ namespace NBA2K12Showcase.Editor
 
             reason = string.Empty;
             return true;
+        }
+
+        private static int CountTriangles(Mesh mesh)
+        {
+            if (mesh == null) return 0;
+            long total = 0;
+            for (int submesh = 0; submesh < mesh.subMeshCount; submesh++)
+                total += (long)(mesh.GetIndexCount(submesh) / 3UL);
+            return total > int.MaxValue ? int.MaxValue : (int)total;
         }
 
         private static Transform FindModelRoot(
