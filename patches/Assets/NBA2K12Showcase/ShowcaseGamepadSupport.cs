@@ -33,7 +33,7 @@ namespace NBA2K12Showcase
         private void Update()
         {
             if (match == null)
-                match = FindFirstObjectByType<BasketballMatchController>();
+                match = FindSceneComponent<BasketballMatchController>();
             if (match == null)
                 return;
 
