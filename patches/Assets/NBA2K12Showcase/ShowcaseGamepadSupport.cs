@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Reflection;
 using CrowdEyes.AI4Animation.Basketball;
@@ -198,6 +199,14 @@ namespace NBA2K12Showcase
                 string missing = string.Join(", ", fieldNames.Where((name, index) => fields[index] == null));
                 Debug.LogError(
                     "[NBA2K12 Showcase] Pass cancelled before possession changes; NeuralCourt pass lifecycle fields are missing: " + missing,
+                    this);
+                return;
+            }
+
+            if (fields.Any(field => field.IsStatic || field.IsInitOnly || field.IsLiteral))
+            {
+                Debug.LogError(
+                    "[NBA2K12 Showcase] Pass cancelled before possession changes; a NeuralCourt pass lifecycle field is no longer writable.",
                     this);
                 return;
             }
