@@ -107,15 +107,15 @@ namespace NBA2K12Showcase.Editor
             }
 
             string importerWarning = unsupportedModelFiles.Count > 0
-                ? "\\n\\nGLB/GLTF files copied but not imported as Unity models: " +
+                ? "\n\nGLB/GLTF files copied but not imported as Unity models: " +
                   string.Join(", ", unsupportedModelFiles.Take(8)) +
                   (unsupportedModelFiles.Count > 8 ? " (and " + (unsupportedModelFiles.Count - 8) + " more)" : "") +
                   ". Install a Unity glTF importer such as glTFast, or convert these files to FBX, then reimport."
                 : string.Empty;
-            string message = "Copied " + copied + " files to local-only folder:\\n" + destinationAsset +
-                "\\n\\nModel files found: " + models + "\\nUnity model assets loaded: " + importedModelAssets +
-                "\\nTextures: " + textures + importerWarning +
-                "\\n\\nFiles under PrivateAssets are excluded from Git. Importing files does not yet replace the active match player's rig.";
+            string message = "Copied " + copied + " files to local-only folder:\n" + destinationAsset +
+                "\n\nModel files found: " + models + "\nUnity model assets loaded: " + importedModelAssets +
+                "\nTextures: " + textures + importerWarning +
+                "\n\nFiles under PrivateAssets are excluded from Git. Importing files does not yet replace the active match player's rig.";
             Debug.Log("[NBA2K12 Showcase] " + message);
             EditorUtility.DisplayDialog("Showcase Asset Import", message, "OK");
         }
