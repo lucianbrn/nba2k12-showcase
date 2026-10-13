@@ -178,30 +178,72 @@ namespace NBA2K12Showcase
                 .Select(item => item.Player)
                 .FirstOrDefault();
 
-            if (target == null || !match.PossessionManager.RequestPass(active, target))
+            if (target == null)
+                return;
+
+            // Validate the complete upstream adapter contract before changing possession.
+            // If NeuralCourt renames a private field, abort before RequestPass can leave a
+            // pass in preparation without the controller's release/timeout lifecycle.
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            string[] fieldNames =
+            {
+                "passTarget", "passCommitted", "passCommittedSeconds",
+                "shotAttempt", "shotCommitted", "lockedTarget"
+            };
+            FieldInfo[] fields = fieldNames
+                .Select(name => typeof(BasketballMatchController).GetField(name, flags))
+                .ToArray();
+            if (fields.Any(field => field == null))
+            {
+                string missing = string.Join(", ", fieldNames.Where((name, index) => fields[index] == null));
+                Debug.LogError(
+                    "[NBA2K12 Showcase] Pass cancelled before possession changes; NeuralCourt pass lifecycle fields are missing: " + missing,
+                    this);
+                return;
+            }
+
+            object[] values = { target, true, 0f, false, false, null };
+            for (int i = 0; i < fields.Length; i++)
+            {
+                if (values[i] != null && !fields[i].FieldType.IsInstanceOfType(values[i]))
+                {
+                    Debug.LogError(
+                        "[NBA2K12 Showcase] Pass cancelled; NeuralCourt field " + fieldNames[i] +
+                        " has unexpected type " + fields[i].FieldType.FullName + ".",
+                        this);
+                    return;
+                }
+
+                if (values[i] == null && fields[i].FieldType.IsValueType &&
+                    Nullable.GetUnderlyingType(fields[i].FieldType) == null)
+                {
+                    Debug.LogError(
+                        "[NBA2K12 Showcase] Pass cancelled; NeuralCourt field " + fieldNames[i] +
+                        " no longer accepts null.",
+                        this);
+                    return;
+                }
+            }
+
+            if (!match.PossessionManager.RequestPass(active, target))
                 return;
 
             // Reuse the match controller's existing pass lifecycle so its neural pass
             // preparation, release window and timeout handling stay authoritative.
-            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            SetPrivateField("passTarget", target, flags);
-            SetPrivateField("passCommitted", true, flags);
-            SetPrivateField("passCommittedSeconds", 0f, flags);
-            SetPrivateField("shotAttempt", false, flags);
-            SetPrivateField("shotCommitted", false, flags);
-            SetPrivateField("lockedTarget", null, flags);
-            Debug.Log("[NBA2K12 Showcase] Gamepad pass committed to player " + target.PlayerIndex, this);
-        }
-
-        private void SetPrivateField(string fieldName, object value, BindingFlags flags)
-        {
-            FieldInfo field = typeof(BasketballMatchController).GetField(fieldName, flags);
-            if (field == null)
+            try
             {
-                Debug.LogWarning("[NBA2K12 Showcase] Controller pass integration could not find field " + fieldName, this);
+                for (int i = 0; i < fields.Length; i++)
+                    fields[i].SetValue(match, values[i]);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError(
+                    "[NBA2K12 Showcase] Pass lifecycle update failed after pass request: " + exception.Message,
+                    this);
                 return;
             }
-            field.SetValue(match, value);
+
+            Debug.Log("[NBA2K12 Showcase] Gamepad pass committed to player " + target.PlayerIndex, this);
         }
     }
 }
