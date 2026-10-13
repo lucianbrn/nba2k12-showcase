@@ -76,6 +76,7 @@ var requiredSourceContracts = new[]
             "Mouse mouse = Mouse.current;",
             "bool mouseActive = mouse != null",
             "else if (keyboardActive || mouseActive)",
+            "pad.rightTrigger.ReadValue() > 0.1f",
             "int next = current < 0",
             "match.SelectPlayer(eligible[next].PlayerIndex);"
         })
