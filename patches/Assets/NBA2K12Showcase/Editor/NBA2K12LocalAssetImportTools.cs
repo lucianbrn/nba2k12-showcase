@@ -204,7 +204,9 @@ namespace NBA2K12Showcase.Editor
         private static bool IsModel(string ext) =>
             ext.Equals(".fbx", StringComparison.OrdinalIgnoreCase) ||
             ext.Equals(".obj", StringComparison.OrdinalIgnoreCase) ||
-            ext.Equals(".dae", StringComparison.OrdinalIgnoreCase);
+            ext.Equals(".dae", StringComparison.OrdinalIgnoreCase) ||
+            ext.Equals(".glb", StringComparison.OrdinalIgnoreCase) ||
+            ext.Equals(".gltf", StringComparison.OrdinalIgnoreCase);
 
         private static bool IsTexture(string ext) =>
             ext.Equals(".png", StringComparison.OrdinalIgnoreCase) ||
