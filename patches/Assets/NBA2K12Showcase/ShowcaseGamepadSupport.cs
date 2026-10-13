@@ -147,7 +147,11 @@ namespace NBA2K12Showcase
                 return;
             int current = System.Array.FindIndex(eligible,
                 p => p.PlayerIndex == match.ActivePlayerIndex);
-            int next = (current + direction + eligible.Length) % eligible.Length;
+            // If the current selection is missing or temporarily off-court, choose the
+            // first eligible teammate rather than wrapping from an invalid index.
+            int next = current < 0
+                ? 0
+                : (current + direction + eligible.Length) % eligible.Length;
             match.SelectPlayer(eligible[next].PlayerIndex);
         }
 
