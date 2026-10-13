@@ -104,7 +104,7 @@ namespace NBA2K12Showcase
 
         private T FindSceneComponent<T>() where T : Component
         {
-            return FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+            return FindObjectsByType<T>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)
                 .FirstOrDefault(candidate =>
                     candidate != null && candidate.gameObject.scene == gameObject.scene);
         }
