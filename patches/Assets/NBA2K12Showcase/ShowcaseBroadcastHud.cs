@@ -28,6 +28,7 @@ namespace NBA2K12Showcase
         [SerializeField, Min(1)] private int regulationPeriods = 4;
 
         private BasketballTeamMember[] players = Array.Empty<BasketballTeamMember>();
+        private BasketballScoreTracker subscribedScoreTracker;
         private readonly int[] playerPoints = new int[10];
         private readonly int[] playerFieldGoalsMade = new int[10];
         private readonly int[] playerThreePointersMade = new int[10];
@@ -86,11 +87,7 @@ namespace NBA2K12Showcase
             // A scene can enable this HUD before other gameplay components finish
             // initializing. Resolve again here, then make subscription idempotent.
             ResolveReferences();
-            if (scoreTracker != null)
-            {
-                scoreTracker.Scored -= HandleScore;
-                scoreTracker.Scored += HandleScore;
-            }
+            BindScoreEvent();
         }
 
         private void Start()
@@ -116,8 +113,9 @@ namespace NBA2K12Showcase
 
         private void OnDisable()
         {
-            if (scoreTracker != null)
-                scoreTracker.Scored -= HandleScore;
+            if (subscribedScoreTracker != null)
+                subscribedScoreTracker.Scored -= HandleScore;
+            subscribedScoreTracker = null;
             RestoreTimeScale();
             ReleaseTextures();
         }
@@ -136,12 +134,35 @@ namespace NBA2K12Showcase
                 scoreTracker = UnityEngine.Object.FindFirstObjectByType<BasketballScoreTracker>();
             if (possessionManager == null)
                 possessionManager = UnityEngine.Object.FindFirstObjectByType<BasketballPossessionManager>();
+            BindScoreEvent();
+        }
+
+        private void BindScoreEvent()
+        {
+            // Unity does not guarantee Awake/OnEnable ordering across different objects.
+            // Rebind only when the live tracker changes, so a tracker created after this
+            // HUD becomes active still drives the scoreboard without duplicate callbacks.
+            if (subscribedScoreTracker == scoreTracker)
+                return;
+
+            if (subscribedScoreTracker != null)
+                subscribedScoreTracker.Scored -= HandleScore;
+
+            subscribedScoreTracker = scoreTracker;
+            if (subscribedScoreTracker != null && isActiveAndEnabled)
+            {
+                subscribedScoreTracker.Scored -= HandleScore;
+                subscribedScoreTracker.Scored += HandleScore;
+            }
         }
 
         private void Update()
         {
             if (!Application.isPlaying)
                 return;
+
+            if (matchController == null || scoreTracker == null || possessionManager == null)
+                ResolveReferences();
 
             Keyboard keyboard = Keyboard.current;
             Gamepad gamepad = Gamepad.current;
