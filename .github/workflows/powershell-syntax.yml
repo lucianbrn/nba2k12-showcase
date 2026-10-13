@@ -1,0 +1,43 @@
+name: PowerShell syntax
+
+on:
+  push:
+    paths:
+      - 'tools/**/*.ps1'
+      - '.github/workflows/powershell-syntax.yml'
+  pull_request:
+    paths:
+      - 'tools/**/*.ps1'
+      - '.github/workflows/powershell-syntax.yml'
+  workflow_dispatch:
+
+jobs:
+  parse-scripts:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse PowerShell scripts
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Path tools -Filter '*.ps1' -Recurse -File
+          if (-not $files) {
+            throw 'No PowerShell scripts were found under tools/.'
+          }
+          $failed = $false
+          foreach ($file in $files) {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              $file.FullName,
+              [ref]$tokens,
+              [ref]$errors
+            ) | Out-Null
+            if ($errors.Count -gt 0) {
+              $failed = $true
+              Write-Host "Syntax errors in $($file.FullName):" -ForegroundColor Red
+              $errors | ForEach-Object { Write-Host "  $($_.Message) (line $($_.Extent.StartLineNumber))" }
+            } else {
+              Write-Host "PASS $($file.FullName)"
+            }
+          }
+          if ($failed) { exit 1 }
