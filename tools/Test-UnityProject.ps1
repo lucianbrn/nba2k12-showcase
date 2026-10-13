@@ -2,7 +2,8 @@
 param(
     [string]$ProjectPath = (Join-Path (Split-Path -Parent $PSScriptRoot) 'NeuralCourt'),
     [string]$UnityPath,
-    [string]$LogPath = (Join-Path (Split-Path -Parent $PSScriptRoot) 'unity-validation.log')
+    [string]$LogPath = (Join-Path (Split-Path -Parent $PSScriptRoot) 'unity-validation.log'),
+    [ValidateRange(1, 180)] [int]$TimeoutMinutes = 25
 )
 
 $ErrorActionPreference = 'Stop'
@@ -49,10 +50,18 @@ if ($logDirectory -and -not (Test-Path -LiteralPath $logDirectory)) {
 Write-Host "Unity Editor: $editor" -ForegroundColor Cyan
 Write-Host "Project:      $project" -ForegroundColor Cyan
 Write-Host "Log:          $log" -ForegroundColor Cyan
-Write-Host 'Running batch-mode project import and C# compilation. This does not prove Play Mode gameplay or visual quality.' -ForegroundColor Yellow
+Write-Host "Running batch-mode project import and C# compilation (timeout: $TimeoutMinutes minutes). This does not prove Play Mode gameplay or visual quality." -ForegroundColor Yellow
 
-$arguments = @('-batchmode', '-quit', '-projectPath', ('"' + $project + '"'), '-logFile', ('"' + $log + '"'))
-$process = Start-Process -FilePath $editor -ArgumentList $arguments -Wait -PassThru
+# APIUpdater must be allowed to run during a clean batch import; otherwise projects
+# upgraded between Unity versions can report avoidable compile failures.
+$arguments = @('-accept-apiupdate', '-batchmode', '-quit', '-projectPath', ('"' + $project + '"'), '-logFile', ('"' + $log + '"'))
+$process = Start-Process -FilePath $editor -ArgumentList $arguments -PassThru
+$timeoutMilliseconds = [int]([Math]::Min([long]::MaxValue, $TimeoutMinutes * 60L * 1000L))
+if (-not $process.WaitForExit($timeoutMilliseconds)) {
+    try { $process.Kill() } catch { }
+    throw "Unity batch validation exceeded $TimeoutMinutes minutes. Process was stopped; inspect $log for an import/package stall."
+}
+$process.Refresh()
 $logText = if (Test-Path -LiteralPath $log) { Get-Content -LiteralPath $log -Raw } else { '' }
 $compileErrors = [regex]::Matches($logText, '(?im)^.*error CS\d+:.*$') |
     ForEach-Object { $_.Value.Trim() } | Select-Object -Unique
@@ -62,6 +71,57 @@ $unityErrors = [regex]::Matches($logText, '(?im)^.*\b(error|exception)\b.*$') |
 if ($compileErrors.Count -gt 0) {
     Write-Host "`nC# compile errors:" -ForegroundColor Red
     $compileErrors | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
+    exit 1
+}
+$fatalImportPatterns = @(
+    '(?im)^.*Script compilation failed.*
+    Write-Host "`nUnity exited with code $($process.ExitCode). Review $log" -ForegroundColor Red
+    $unityErrors | Select-Object -Last 30 | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
+    exit $process.ExitCode
+}
+
+Write-Host "`nBatch-mode import/compile completed without reported C# compiler errors." -ForegroundColor Green
+Write-Host "Log saved to: $log"
+Write-Host 'Next: open BasketballDemo.unity, run Tools > NBA2K12 Showcase > 16 - One-Click Core Setup, then test 5v5 movement, pass, shoot, score/restart, and a wired controller in Play Mode.'
+,
+    '(?im)^.*Failed to resolve packages.*
+    Write-Host "`nUnity exited with code $($process.ExitCode). Review $log" -ForegroundColor Red
+    $unityErrors | Select-Object -Last 30 | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
+    exit $process.ExitCode
+}
+
+Write-Host "`nBatch-mode import/compile completed without reported C# compiler errors." -ForegroundColor Green
+Write-Host "Log saved to: $log"
+Write-Host 'Next: open BasketballDemo.unity, run Tools > NBA2K12 Showcase > 16 - One-Click Core Setup, then test 5v5 movement, pass, shoot, score/restart, and a wired controller in Play Mode.'
+,
+    '(?im)^.*Aborting batchmode due to failure.*
+    Write-Host "`nUnity exited with code $($process.ExitCode). Review $log" -ForegroundColor Red
+    $unityErrors | Select-Object -Last 30 | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
+    exit $process.ExitCode
+}
+
+Write-Host "`nBatch-mode import/compile completed without reported C# compiler errors." -ForegroundColor Green
+Write-Host "Log saved to: $log"
+Write-Host 'Next: open BasketballDemo.unity, run Tools > NBA2K12 Showcase > 16 - One-Click Core Setup, then test 5v5 movement, pass, shoot, score/restart, and a wired controller in Play Mode.'
+,
+    '(?im)^.*Assembly-CSharp.*error.*
+    Write-Host "`nUnity exited with code $($process.ExitCode). Review $log" -ForegroundColor Red
+    $unityErrors | Select-Object -Last 30 | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
+    exit $process.ExitCode
+}
+
+Write-Host "`nBatch-mode import/compile completed without reported C# compiler errors." -ForegroundColor Green
+Write-Host "Log saved to: $log"
+Write-Host 'Next: open BasketballDemo.unity, run Tools > NBA2K12 Showcase > 16 - One-Click Core Setup, then test 5v5 movement, pass, shoot, score/restart, and a wired controller in Play Mode.'
+
+)
+$fatalImportErrors = foreach ($pattern in $fatalImportPatterns) {
+    [regex]::Matches($logText, $pattern) | ForEach-Object { $_.Value.Trim() }
+}
+$fatalImportErrors = @($fatalImportErrors | Select-Object -Unique)
+if ($fatalImportErrors.Count -gt 0) {
+    Write-Host "`nUnity import/compilation failures:" -ForegroundColor Red
+    $fatalImportErrors | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
     exit 1
 }
 if ($process.ExitCode -ne 0) {
