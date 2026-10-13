@@ -77,6 +77,9 @@ var requiredSourceContracts = new[]
             "bool mouseActive = mouse != null",
             "else if (keyboardActive || mouseActive)",
             "pad.rightTrigger.ReadValue() > 0.1f",
+            "Pass cancelled before possession changes",
+            "field.IsInitOnly || field.IsLiteral",
+            "match.PossessionManager.RequestPass(active, target)",
             "int next = current < 0",
             "match.SelectPlayer(eligible[next].PlayerIndex);"
         })
