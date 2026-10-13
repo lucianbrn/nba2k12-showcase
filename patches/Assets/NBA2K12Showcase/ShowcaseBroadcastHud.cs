@@ -83,8 +83,14 @@ namespace NBA2K12Showcase
 
         private void OnEnable()
         {
+            // A scene can enable this HUD before other gameplay components finish
+            // initializing. Resolve again here, then make subscription idempotent.
+            ResolveReferences();
             if (scoreTracker != null)
+            {
+                scoreTracker.Scored -= HandleScore;
                 scoreTracker.Scored += HandleScore;
+            }
         }
 
         private void Start()
