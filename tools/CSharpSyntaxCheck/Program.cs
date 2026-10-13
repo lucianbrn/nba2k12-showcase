@@ -80,6 +80,9 @@ var requiredSourceContracts = new[]
             "Pass cancelled before possession changes",
             "field.IsInitOnly || field.IsLiteral",
             "match.PossessionManager.RequestPass(active, target)",
+            "previousValues = fields.Select(field => field.GetValue(match)).ToArray()",
+            "previous possession was restored",
+            "match.PossessionManager.ResetPossession(",
             "int next = current < 0",
             "match.SelectPlayer(eligible[next].PlayerIndex);"
         })
