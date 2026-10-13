@@ -51,7 +51,7 @@ Write-Host "Project:      $project" -ForegroundColor Cyan
 Write-Host "Log:          $log" -ForegroundColor Cyan
 Write-Host 'Running batch-mode project import and C# compilation. This does not prove Play Mode gameplay or visual quality.' -ForegroundColor Yellow
 
-$arguments = @('-batchmode', '-quit', '-projectPath', $project, '-logFile', $log)
+$arguments = @('-batchmode', '-quit', '-projectPath', ('"' + $project + '"'), '-logFile', ('"' + $log + '"'))
 $process = Start-Process -FilePath $editor -ArgumentList $arguments -Wait -PassThru
 $logText = if (Test-Path -LiteralPath $log) { Get-Content -LiteralPath $log -Raw } else { '' }
 $compileErrors = [regex]::Matches($logText, '(?im)^.*error CS\d+:.*$') |
