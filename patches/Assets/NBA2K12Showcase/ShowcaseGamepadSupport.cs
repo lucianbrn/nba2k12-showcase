@@ -164,9 +164,22 @@ namespace NBA2K12Showcase
             if (active == null || match.Owner != active || match.PossessionManager == null)
                 return;
 
+            // Interpret the right stick in camera space, as players expect from a
+            // console basketball game. A raw (x, y) -> world (x, z) mapping changes
+            // pass direction whenever the broadcast camera rotates around the court.
+            Vector3 cameraForward = Camera.main != null
+                ? Vector3.ProjectOnPlane(Camera.main.transform.forward, Vector3.up)
+                : Vector3.ProjectOnPlane(active.transform.forward, Vector3.up);
+            if (cameraForward.sqrMagnitude < 0.001f)
+                cameraForward = Vector3.forward;
+            cameraForward.Normalize();
+            Vector3 cameraRight = Vector3.Cross(Vector3.up, cameraForward).normalized;
             Vector3 direction = aim.sqrMagnitude > 0.09f
-                ? new Vector3(aim.x, 0f, aim.y).normalized
-                : active.transform.forward;
+                ? (cameraRight * aim.x + cameraForward * aim.y).normalized
+                : Vector3.ProjectOnPlane(active.transform.forward, Vector3.up).normalized;
+            if (direction.sqrMagnitude < 0.001f)
+                direction = cameraForward;
+
             BasketballTeamMember target = players
                 .Where(p => p != null && p.IsOnCourt && p.TeamId == active.TeamId && p != active)
                 .Select(p => new { Player = p, Offset = p.transform.position - active.transform.position })
