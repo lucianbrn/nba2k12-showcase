@@ -24,7 +24,7 @@ namespace NBA2K12Showcase
 
         private void Awake()
         {
-            match = FindFirstObjectByType<BasketballMatchController>();
+            match = FindSceneComponent<BasketballMatchController>();
             RefreshPlayers();
             nextPlayerRefreshTime = Time.unscaledTime + 1f;
             SetGamepadMode(Gamepad.current != null);
@@ -100,6 +100,13 @@ namespace NBA2K12Showcase
 
             // Pause is owned by ShowcaseBroadcastHud.Update. Handling Start here too
             // toggles pause twice in the same frame and can immediately resume the game.
+        }
+
+        private T FindSceneComponent<T>() where T : Component
+        {
+            return FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault(candidate =>
+                    candidate != null && candidate.gameObject.scene == gameObject.scene);
         }
 
         private void RefreshPlayers()
