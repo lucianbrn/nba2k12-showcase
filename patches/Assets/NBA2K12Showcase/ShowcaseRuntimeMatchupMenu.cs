@@ -167,7 +167,10 @@ namespace NBA2K12Showcase
                     GUI.Box(new Rect(x - 7, 273, width + 14, 554), GUIContent.none, buttonStyle);
                 if (GUI.Button(new Rect(x + 24, 746, width - 48, 54),
                     i == selected ? "SELECT MATCHUP  ›" : "VIEW MATCHUP", buttonStyle))
+                {
                     selected = i;
+                    state = MenuState.Preview;
+                }
             }
             GUI.Label(new Rect(100, 860, 1720, 45),
                 "LEFT / RIGHT  CHANGE MATCHUP     •     ENTER / A  VIEW LINEUPS     •     ESC / B  BACK", mutedStyle);
@@ -242,6 +245,17 @@ namespace NBA2K12Showcase
             Destroy(gameObject);
         }
 
+        private static FieldInfo FindFieldInHierarchy(Type type, string fieldName)
+        {
+            for (Type current = type; current != null; current = current.BaseType)
+            {
+                FieldInfo field = current.GetField(fieldName,
+                    BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly);
+                if (field != null) return field;
+            }
+            return null;
+        }
+
         private static void ApplyMatchupToScene(Scene scene, Matchup matchup)
         {
             BasketballTeamMember[] members = UnityEngine.Object.FindObjectsByType<BasketballTeamMember>(
@@ -268,15 +282,13 @@ namespace NBA2K12Showcase
                 if (identity == null) identity = member.gameObject.AddComponent<ShowcasePlayerIdentity>();
                 identity.Configure(player.name, player.position, player.number, team.name);
 
-                FieldInfo jerseyField = typeof(BasketballTeamMember).GetField(
-                    "jerseyNumber", BindingFlags.Instance | BindingFlags.NonPublic);
+                FieldInfo jerseyField = FindFieldInHierarchy(typeof(BasketballTeamMember), "jerseyNumber");
                 if (jerseyField != null && jerseyField.FieldType == typeof(int) && !jerseyField.IsInitOnly)
                     jerseyField.SetValue(member, player.number);
 
                 foreach (BasketballPlayerAppearance appearance in member.GetComponentsInChildren<BasketballPlayerAppearance>(true))
                 {
-                    FieldInfo profileField = typeof(BasketballPlayerAppearance).GetField(
-                        "teamProfiles", BindingFlags.Instance | BindingFlags.NonPublic);
+                    FieldInfo profileField = FindFieldInHierarchy(typeof(BasketballPlayerAppearance), "teamProfiles");
                     Array assigned = profileField != null ? profileField.GetValue(appearance) as Array : null;
                     if (assigned != null)
                     {
