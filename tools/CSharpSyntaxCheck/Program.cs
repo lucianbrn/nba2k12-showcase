@@ -75,6 +75,7 @@ var requiredSourceContracts = new[]
         {
             "Mouse mouse = Mouse.current;",
             "bool mouseActive = mouse != null",
+            "keyboard.enterKey.wasPressedThisFrame || keyboard.numpadEnterKey.wasPressedThisFrame",
             "else if (keyboardActive || mouseActive)",
             "pad.rightTrigger.ReadValue() > 0.1f",
             "Pass cancelled before possession changes",
