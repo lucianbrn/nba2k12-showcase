@@ -65,6 +65,8 @@ var requiredSourceContracts = new[]
             "subscribedScoreTracker.Scored -= HandleScore;",
             "subscribedScoreTracker.Scored += HandleScore;",
             "if (matchController == null || scoreTracker == null || possessionManager == null)",
+            "private T FindSceneComponent<T>() where T : Component",
+            "candidate.gameObject.scene == gameObject.scene",
             "keyboard.enterKey.wasPressedThisFrame",
             "keyboard.numpadEnterKey.wasPressedThisFrame",
             "if (final) RestartGame();",
@@ -78,6 +80,8 @@ var requiredSourceContracts = new[]
         Required: new[]
         {
             "Mouse mouse = Mouse.current;",
+            "private T FindSceneComponent<T>() where T : Component",
+            "candidate.gameObject.scene == gameObject.scene",
             "bool mouseActive = mouse != null",
             "keyboard.enterKey.wasPressedThisFrame || keyboard.numpadEnterKey.wasPressedThisFrame",
             "else if (keyboardActive || mouseActive)",
