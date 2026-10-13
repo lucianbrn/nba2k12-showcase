@@ -86,8 +86,8 @@ namespace NBA2K12Showcase
             if (pad.leftTrigger.ReadValue() > 0.55f && pad.buttonSouth.wasPressedThisFrame)
                 TryPass(pad.rightStick.ReadValue());
 
-            if (pad.startButton.wasPressedThisFrame)
-                TogglePause();
+            // Pause is owned by ShowcaseBroadcastHud.Update. Handling Start here too
+            // toggles pause twice in the same frame and can immediately resume the game.
         }
 
         private void RefreshPlayers()
