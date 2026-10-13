@@ -18,6 +18,7 @@ namespace NBA2K12Showcase
         private BasketballMatchController match;
         private BasketballTeamMember[] players = System.Array.Empty<BasketballTeamMember>();
         private bool gamepadMode;
+        private bool inputModeInitialized;
         private float nextPlayerRefreshTime;
 
         private void Awake()
@@ -100,10 +101,11 @@ namespace NBA2K12Showcase
 
         private void SetGamepadMode(bool enabled)
         {
-            if (gamepadMode == enabled)
+            if (inputModeInitialized && gamepadMode == enabled)
                 return;
 
             gamepadMode = enabled;
+            inputModeInitialized = true;
             ApplyInputMode(enabled);
             Debug.Log("[NBA2K12 Showcase] Active input: " +
                       (enabled ? "gamepad (USB supported where exposed by Input System)" : "keyboard/mouse"), this);
