@@ -87,9 +87,35 @@ namespace NBA2K12Showcase.Editor
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             AssetDatabase.SaveAssets();
 
-            string message = "Copied " + copied + " files to local-only folder:\n" + destinationAsset +
-                "\n\nModels: " + models + "\nTextures: " + textures +
-                "\n\nFiles under PrivateAssets are excluded from Git. Importing files does not yet replace the active match player's rig.";
+            int importedModelAssets = 0;
+            var unsupportedModelFiles = new List<string>();
+            foreach (string file in files.Where(path => IsModel(Path.GetExtension(path))))
+            {
+                string relative = file.Substring(sourceRoot.Length)
+                    .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                    .Replace('\\', '/');
+                string assetPath = PrivateRoot + "/" + name + "/" + relative;
+                if (AssetDatabase.LoadAssetAtPath<GameObject>(assetPath) != null)
+                {
+                    importedModelAssets++;
+                }
+                else if (Path.GetExtension(file).Equals(".glb", StringComparison.OrdinalIgnoreCase) ||
+                         Path.GetExtension(file).Equals(".gltf", StringComparison.OrdinalIgnoreCase))
+                {
+                    unsupportedModelFiles.Add(Path.GetFileName(file));
+                }
+            }
+
+            string importerWarning = unsupportedModelFiles.Count > 0
+                ? "\\n\\nGLB/GLTF files copied but not imported as Unity models: " +
+                  string.Join(", ", unsupportedModelFiles.Take(8)) +
+                  (unsupportedModelFiles.Count > 8 ? " (and " + (unsupportedModelFiles.Count - 8) + " more)" : "") +
+                  ". Install a Unity glTF importer such as glTFast, or convert these files to FBX, then reimport."
+                : string.Empty;
+            string message = "Copied " + copied + " files to local-only folder:\\n" + destinationAsset +
+                "\\n\\nModel files found: " + models + "\\nUnity model assets loaded: " + importedModelAssets +
+                "\\nTextures: " + textures + importerWarning +
+                "\\n\\nFiles under PrivateAssets are excluded from Git. Importing files does not yet replace the active match player's rig.";
             Debug.Log("[NBA2K12 Showcase] " + message);
             EditorUtility.DisplayDialog("Showcase Asset Import", message, "OK");
         }
