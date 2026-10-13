@@ -47,7 +47,7 @@ namespace NBA2K12Showcase.Editor
             };
             foreach (EditorBuildSettingsScene scene in existing)
             {
-                if (scene == null || !scene.enabled) continue;
+                if (scene == null) continue;
                 if (scene.path == MenuScenePath || scene.path == CourtScenePath) continue;
                 ordered.Add(scene);
             }
