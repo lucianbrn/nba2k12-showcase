@@ -88,7 +88,7 @@ var requiredSourceContracts = new[]
             "match.PossessionManager.ResetPossession(",
             "int next = current < 0",
             "match.SelectPlayer(eligible[next].PlayerIndex);"
-        })
+        }),
     (
         File: Path.Combine(sourceRoot, "Editor", "ShowcaseEraMatchupTools.cs"),
         Description: "Only the three requested historical matchups are selectable",
