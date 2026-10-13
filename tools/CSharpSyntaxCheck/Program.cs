@@ -111,7 +111,9 @@ var requiredSourceContracts = new[]
             "private static FieldInfo FindFieldInHierarchy(Type type, string fieldName)",
             "ApplyMatchupToScene(scene, matchups[selected])",
             "identity.Configure(player.name, player.position, player.number, team.name)",
-            "profile.Configure(slot, source.name, source.primary, source.secondary, Color.white)",
+            "ConfigureRuntimeProfile(profile, slot, source)",
+            "SetRuntimeField(profile, \"teamId\", Mathf.Max(0, teamId))",
+            "SetRuntimeField(profile, \"jerseyColor\", team.primary)",
             "hud.ConfigureTeams(matchup.home.name, matchup.away.name)"
         }),
     (
