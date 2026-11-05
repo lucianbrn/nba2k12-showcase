@@ -1,0 +1,31 @@
+name: Unity licence activation file (manual, one-time)
+
+# One-time helper for the repo owner. Run this workflow once, download the
+# generated .alf artifact, submit it at https://licence.unity3d.com/manual,
+# and save the returned .ulf licence text as the repository secret
+# UNITY_LICENSE. After that, the "Unity compile + EditMode tests" workflow
+# can run the real Unity 6000.5.3f1 editor in CI.
+# See https://game.ci/docs/github/activation for the full walkthrough.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  activation:
+    name: Request activation file for Unity 6000.5.3f1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request the activation file
+        uses: game-ci/unity-request-activation-file@v2
+        id: getManualLicenseFile
+        with:
+          unityVersion: 6000.5.3f1
+
+      - name: Upload the activation file as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Manual Activation File
+          path: ${{ steps.getManualLicenseFile.outputs.filePath }}
