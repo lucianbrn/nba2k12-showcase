@@ -4,11 +4,13 @@ name: Unity compile + EditMode tests (manual)
 # can run (see docs/FINISH_AUDIT_2026-11-05.md). It does not run on push, so
 # it never fails noisily while the secret is missing.
 #
-# One-time setup (repo owner):
-#   1. Follow https://game.ci/docs/github/activation to request an activation
-#      file for Unity 6000.5.3f1, submit it to Unity's licence portal, and
-#      save the returned licence text as the repository secret UNITY_LICENSE.
-#   2. Run this workflow from the Actions tab ("Run workflow").
+# One-time setup (repo owner), per https://game.ci/docs/github/activation:
+#   1. Install Unity Hub on your PC, log in, then Preferences > Licenses >
+#      Add > "Get a free personal license". This creates Unity_lic.ulf at
+#      C:\ProgramData\Unity\Unity_lic.ulf (Windows).
+#   2. Settings > Secrets and variables > Actions: add UNITY_LICENSE (the
+#      whole contents of that .ulf file), UNITY_EMAIL, UNITY_PASSWORD.
+#   3. Run this workflow from the Actions tab ("Run workflow").
 #
 # What it does: checks out the pinned NeuralCourt submodule, installs the
 # showcase overlay with tools/Install-ShowcasePatch.sh, then compiles every
@@ -48,6 +50,8 @@ jobs:
         uses: game-ci/unity-test-runner@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: NeuralCourt
           unityVersion: 6000.5.3f1
