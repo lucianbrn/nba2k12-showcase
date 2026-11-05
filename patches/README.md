@@ -18,7 +18,7 @@ The script can accept `-UnityPath`, `-ProjectPath`, and `-LogPath`. A successful
 
 - **0 — Apply NBA 2K Gameplay Camera Framing:** adjusts the player-follow camera framing.
 - **1 — Apply TV Presentation Polish:** adjusts URP presentation settings, shadows and ambient light.
-- **2 — Apply Lakers vs Celtics Palette:** color palette only; not an authentic uniform or supported roster.
+- **2 — Apply Heat vs Celtics Palette:** color palette only; not an authentic uniform or supported roster.
 - **3 — Audit Active Scene:** basic scene/component counts.
 - **4 — Configure Selected Model as Humanoid:** configures an FBX rig and attempts to create a Humanoid Avatar.
 - **5 — Import Local Model and Texture Exports:** copies supported local model/texture files into ignored private assets.
