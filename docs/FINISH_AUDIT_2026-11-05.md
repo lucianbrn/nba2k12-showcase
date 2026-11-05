@@ -90,6 +90,26 @@ project remains **in development**: nothing here claims the gate is passed.
   (filesystem search found no Unity; the .NET checker and installer dry-run
   above are the strongest verification available without the editor).
 
+## Finishing routes added later on 2026-11-05 ("finish the game" pass)
+
+Two routes now exist to get a real Unity compile without a local install,
+plus a Linux/macOS validator:
+
+- `.github/workflows/unity-activation.yml` — manual, one-time. Generates the
+  Unity 6000.5.3f1 activation file (`.alf`) as a downloadable artifact.
+- `.github/workflows/unity-compile.yml` — manual. Checks out the pinned
+  submodule, installs the overlay with `tools/Install-ShowcasePatch.sh`,
+  compiles every script in the real Unity 6000.5.3f1 editor via GameCI, and
+  runs the upstream EditMode tests.
+- `tools/Test-UnityProject.sh` — Linux/macOS mirror of the batch-mode
+  validator (guard stages tested on a machine with no Unity installed).
+
+The single remaining owner step for the CI route: run the activation
+workflow, submit the `.alf` at https://licence.unity3d.com/manual, and save
+the returned `.ulf` text as the repository secret `UNITY_LICENSE`. Then run
+the compile workflow. A green run proves real Unity compilation + upstream
+tests; Play Mode visuals still require a real machine (route below).
+
 ## Exact PC steps that remain (Windows, ~15 minutes plus download time)
 
 1. Install Unity Hub and the exact editor **6000.5.3f1**.
