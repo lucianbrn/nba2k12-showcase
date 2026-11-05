@@ -54,8 +54,8 @@ namespace NBA2K12Showcase
         private readonly Team heat = new Team("MIAMI HEAT", "MIA", "2013  •  MIAMI, FLORIDA",
             Hex("98002E"), Hex("121212"), new[] {
                 new Player("Mario Chalmers", "PG", 15), new Player("Dwyane Wade", "SG", 3),
-                new Player("LeBron James", "SF", 6), new Player("Chris Bosh", "PF", 1),
-                new Player("Ray Allen", "SG", 34)
+                new Player("LeBron James", "SF", 6), new Player("Udonis Haslem", "PF", 40),
+                new Player("Chris Bosh", "C", 1)
             });
         private readonly Team celtics = new Team("BOSTON CELTICS", "BOS", "2008  •  BOSTON, MASSACHUSETTS",
             Hex("007A33"), Hex("F5F5F0"), new[] {

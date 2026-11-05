@@ -1,6 +1,18 @@
 # Asset Import Status
 
-Last updated: 2026-10-12
+Last updated: 2026-11-05
+
+## Verified 2026-11-05 (no Unity — see docs/FINISH_AUDIT_2026-11-05.md)
+
+- C# syntax + source contracts pass locally (.NET 8) and in GitHub Actions.
+- Every upstream NeuralCourt API and reflected field the overlay depends on
+  was cross-checked against the pinned upstream source (`8496152`) and matches.
+- The installer was dry-run end-to-end against a pristine pinned clone,
+  including a new tested Linux/macOS installer (`tools/Install-ShowcasePatch.sh`).
+- The 2013 Heat five was corrected to the most-used starting lineup
+  (Haslem PF #40, Bosh C #1) in all three roster definitions.
+- Still NOT verified: Unity compilation, Play Mode, models, uniforms,
+  animation, or a stable build. The project remains in development.
 
 ## Verified in the referenced Unity project
 

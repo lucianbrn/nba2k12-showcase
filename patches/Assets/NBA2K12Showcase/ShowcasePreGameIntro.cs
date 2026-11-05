@@ -8,9 +8,14 @@ using UnityEngine.SceneManagement;
 namespace NBA2K12Showcase
 {
     /// <summary>
-    /// Optional pre-game flow for the Lakers/Celtics showcase. Displays team selection,
-    /// confirms a five-player roster, runs a broadcast intro card, then loads the court scene.
-    /// Add this component to a bootstrap/menu scene; do not add it to BasketballDemo itself.
+    /// LEGACY / UNUSED (verified 2026-11-05): optional pre-game flow for an earlier
+    /// Lakers/Celtics showcase concept. No editor tool, scene, or build setting in this
+    /// repository creates or references this component, and the Lakers are not one of the
+    /// three supported teams (2013 Heat, 2008 Celtics, 2017 Warriors). The supported
+    /// pre-game flow is <see cref="ShowcaseRuntimeMatchupMenu"/>, created by editor menu
+    /// item 20. This file is kept for reference only; do not add it to a scene.
+    /// Displays team selection, confirms a five-player roster, runs a broadcast intro
+    /// card, then loads the court scene.
     /// </summary>
     public sealed class ShowcasePreGameIntro : MonoBehaviour
     {

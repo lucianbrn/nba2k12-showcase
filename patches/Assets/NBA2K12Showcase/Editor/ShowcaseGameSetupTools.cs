@@ -31,8 +31,8 @@ namespace NBA2K12Showcase.Editor
             new() { PlayerIndex = 0, TeamId = 0, Number = 15, Name = "Mario Chalmers", Position = "PG", Team = "Miami Heat" },
             new() { PlayerIndex = 1, TeamId = 0, Number = 3, Name = "Dwyane Wade", Position = "SG", Team = "Miami Heat" },
             new() { PlayerIndex = 2, TeamId = 0, Number = 6, Name = "LeBron James", Position = "SF", Team = "Miami Heat" },
-            new() { PlayerIndex = 3, TeamId = 0, Number = 1, Name = "Chris Bosh", Position = "PF", Team = "Miami Heat" },
-            new() { PlayerIndex = 4, TeamId = 0, Number = 34, Name = "Ray Allen", Position = "SG", Team = "Miami Heat" },
+            new() { PlayerIndex = 3, TeamId = 0, Number = 40, Name = "Udonis Haslem", Position = "PF", Team = "Miami Heat" },
+            new() { PlayerIndex = 4, TeamId = 0, Number = 1, Name = "Chris Bosh", Position = "C", Team = "Miami Heat" },
 
             new() { PlayerIndex = 5, TeamId = 1, Number = 9, Name = "Rajon Rondo", Position = "PG", Team = "Boston Celtics" },
             new() { PlayerIndex = 6, TeamId = 1, Number = 20, Name = "Ray Allen", Position = "SG", Team = "Boston Celtics" },

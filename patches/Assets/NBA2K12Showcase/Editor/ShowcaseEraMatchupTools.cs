@@ -39,8 +39,8 @@ namespace NBA2K12Showcase.Editor
             Jersey = Hex("98002E"), Shorts = Hex("121212"), Number = Color.white,
             Players = new[] {
                 new Player("Mario Chalmers", "PG", 15), new Player("Dwyane Wade", "SG", 3),
-                new Player("LeBron James", "SF", 6), new Player("Chris Bosh", "PF", 1),
-                new Player("Ray Allen", "SG", 34)
+                new Player("LeBron James", "SF", 6), new Player("Udonis Haslem", "PF", 40),
+                new Player("Chris Bosh", "C", 1)
             }
         };
 

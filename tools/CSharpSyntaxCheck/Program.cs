@@ -151,6 +151,30 @@ var requiredSourceContracts = new[]
             "new Player(\"Stephen Curry\", \"PG\", 30)",
             "new Player(\"Kevin Garnett\", \"PF\", 5)"
         }),
+    (
+        File: Path.Combine(sourceRoot, "Editor", "ShowcaseEraMatchupTools.cs"),
+        Description: "2013 Heat five is the most-used starting lineup (Haslem PF, Bosh C)",
+        Required: new[]
+        {
+            "new Player(\"Udonis Haslem\", \"PF\", 40)",
+            "new Player(\"Chris Bosh\", \"C\", 1)"
+        }),
+    (
+        File: Path.Combine(sourceRoot, "ShowcaseRuntimeMatchupMenu.cs"),
+        Description: "Runtime menu Heat five matches the editor matchup tools",
+        Required: new[]
+        {
+            "new Player(\"Udonis Haslem\", \"PF\", 40)",
+            "new Player(\"Chris Bosh\", \"C\", 1)"
+        }),
+    (
+        File: Path.Combine(sourceRoot, "Editor", "ShowcaseGameSetupTools.cs"),
+        Description: "Demo roster Heat five matches the editor matchup tools",
+        Required: new[]
+        {
+            "Name = \"Udonis Haslem\", Position = \"PF\"",
+            "Name = \"Chris Bosh\", Position = \"C\""
+        }),
 };
 
 foreach (var contract in requiredSourceContracts)
